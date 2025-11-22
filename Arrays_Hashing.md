@@ -58,3 +58,30 @@ public:
     }
 };
 ```
+
+### 4 Two Sum
+Given an array of integers nums and an integer target, return the indices i and j such that nums[i] + nums[j] == target and i != j.
+
+You may assume that every input has exactly one pair of indices i and j that satisfy the condition.
+
+Return the answer with the smaller index first.
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int,int>mp;
+        vector<int>res;
+        for(int i=0;i<nums.size();i++){
+            if(mp.count(target-nums[i]))
+            {
+                res.push_back(mp[target-nums[i]]);
+                res.push_back(i);
+                break;
+            }
+            mp[nums[i]]=i;
+        }
+        return res;
+    }
+};
+```
