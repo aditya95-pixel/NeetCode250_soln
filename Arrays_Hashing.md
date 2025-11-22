@@ -109,3 +109,35 @@ public:
     }
 };
 ```
+
+### 6 Group Anagrams
+
+Given an array of strings strs, group all anagrams together into sublists. You may return the output in any order.
+
+An anagram is a string that contains the exact same characters as another string, but the order of the characters can be different.
+
+```cpp
+class Solution {
+public:
+    string hash(string s){
+        vector<int>freq(26,0);
+        for(auto &c:s)
+        freq[c-'a']++;
+        string h;
+        for(auto &val:freq)
+        h+=to_string(val)+" ";
+        return h;
+    }
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        vector<vector<string>>res;
+        unordered_map<string,vector<string>>mp;
+        for(auto &str:strs){
+            string h=hash(str);
+            mp[h].push_back(str);
+        }
+        for(auto &item:mp)
+        res.push_back(item.second);
+        return res;
+    }
+};
+```
