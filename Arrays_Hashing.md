@@ -16,3 +16,45 @@ public:
     }
 };
 ```
+
+### 2 Contains Duplicate
+
+Given an integer array nums, return true if any value appears more than once in the array, otherwise return false.
+
+```cpp
+class Solution {
+public:
+    bool containsDuplicate(vector<int>& nums) {
+        set<int>s;
+        for(auto &num:nums){
+            if(s.count(num))
+            return 1;
+            s.insert(num);
+        }
+        return 0;
+    }
+};
+```
+
+### 3 Valid Anagram
+
+Given two strings s and t, return true if the two strings are anagrams of each other, otherwise return false.
+
+An anagram is a string that contains the exact same characters as another string, but the order of the characters can be different.
+
+```cpp
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        if(s.size()!=t.size())
+        return 0;
+        unordered_map<char,int>mp1,mp2;
+        for(int i=0;i<s.size();i++)
+        {
+            mp1[s[i]]++;
+            mp2[t[i]]++;
+        }
+        return mp1==mp2;
+    }
+};
+```
