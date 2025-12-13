@@ -362,3 +362,33 @@ public:
     }
 };
 ```
+
+### 14 Encode and Decode Strings
+
+Design an algorithm to encode a list of strings to a single string. The encoded string is then decoded back to the original list of strings.
+
+Please implement encode and decode
+
+```cpp
+class Solution {
+public:
+    string encode(vector<string>& strs) {
+        string res;
+        for(auto &str:strs)
+        res+=str+'\n';
+        return res;
+    }
+    vector<string> decode(string s) {
+        int i=0;
+        vector<string>res;
+        while(i<s.size()){
+            string temp;
+            while(i<s.size() && s[i]!='\n')
+                temp+=s[i++];
+            i++;
+            res.push_back(temp);
+        }
+        return res;
+    }
+};
+```
