@@ -408,3 +408,279 @@ public:
     }
 };
 ```
+
+### 9 Online Stock Span
+
+Design an algorithm that collects daily price quotes for some stock and returns the span of that stock's price for the current day.
+
+The span of the stock's price in one day is the maximum number of consecutive days (starting from that day and going backward) for which the stock price was less than or equal to the price of that day.
+
+For example, if the prices of the stock in the last four days is [7,2,1,2] and the price of the stock today is 2, then the span of today is 4 because starting from today, the price of the stock was less than or equal 2 for 4 consecutive days.
+Also, if the prices of the stock in the last four days is [7,34,1,2] and the price of the stock today is 8, then the span of today is 3 because starting from today, the price of the stock was less than or equal 8 for 3 consecutive days.
+Implement the StockSpanner class:
+
+StockSpanner() Initializes the object of the class.
+int next(int price) Returns the span of the stock's price given that today's price is price.
+
+```cpp
+class StockSpanner {
+    stack<int>stk;
+    vector<pair<int,int>>v;
+    int cnt=0;
+public:
+    StockSpanner() {
+        
+    }
+    
+    int next(int price) {
+       if(stk.empty())
+       {
+            stk.push(price);
+            cnt++;
+            return cnt;
+       }else if(stk.top()<=price)
+       {
+            stk.push(price);
+            cnt++;
+            int end=v.size(),res=cnt;
+            for(int i=end-1;i>=0;i--){
+                if(v[i].first<=price)
+                res+=v[i].second;
+                else
+                break;
+            }
+            return res;
+       }else{
+            v.push_back({stk.top(),cnt});
+            stk.push(price);
+            cnt=1;
+            return cnt;
+       }
+    }
+};
+
+/**
+ * Your StockSpanner object will be instantiated and called as such:
+ * StockSpanner* obj = new StockSpanner();
+ * int param_1 = obj->next(price);
+ */
+```
+
+### 10 Car Fleet
+
+There are n cars at given miles away from the starting mile 0, traveling to reach the mile target.
+
+You are given two integer arrays position and speed, both of length n, where position[i] is the starting mile of the ith car and speed[i] is the speed of the ith car in miles per hour.
+
+A car cannot pass another car, but it can catch up and then travel next to it at the speed of the slower car.
+
+A car fleet is a single car or a group of cars driving next to each other. The speed of the car fleet is the minimum speed of any car in the fleet.
+
+If a car catches up to a car fleet at the mile target, it will still be considered as part of the car fleet.
+
+Return the number of car fleets that will arrive at the destination.
+
+```cpp
+class Solution {
+public:
+    int carFleet(int target, vector<int>& position, vector<int>& speed) {
+        vector<pair<int,int>>vp;
+        for(int i=0;i<speed.size();i++)
+        vp.push_back({position[i],speed[i]});
+        sort(vp.rbegin(),vp.rend());
+        double time=(double)(target-vp[0].first)/vp[0].second;
+        int cnt=1;
+        for(int i=1;i<vp.size();i++){
+            if((double)(target-vp[i].first)/vp[i].second<=time)
+            continue;
+            else
+            {
+                time=(double)(target-vp[i].first)/vp[i].second;
+                cnt++;
+            }
+        }
+        return cnt;
+    }
+};
+```
+
+### 11 Simplify Path
+
+You are given an absolute path for a Unix-style file system, which always begins with a slash '/'. Your task is to transform this absolute path into its simplified canonical path.
+
+The rules of a Unix-style file system are as follows:
+
+A single period '.' represents the current directory.
+A double period '..' represents the previous/parent directory.
+Multiple consecutive slashes such as '//' and '///' are treated as a single slash '/'.
+Any sequence of periods that does not match the rules above should be treated as a valid directory or file name. For example, '...' and '....' are valid directory or file names.
+The simplified canonical path should follow these rules:
+
+The path must start with a single slash '/'.
+Directories within the path must be separated by exactly one slash '/'.
+The path must not end with a slash '/', unless it is the root directory.
+The path must not have any single or double periods ('.' and '..') used to denote current or parent directories.
+Return the simplified canonical path.
+
+```cpp
+class Solution {
+public:
+    string simplifyPath(string path) {
+        stack<string>stk;
+        int i=0;
+        while(i<path.size()){
+            i++;
+            string temp="/";
+            while(i<path.size() && path[i]!='/')
+            temp+=path[i++];
+            if(temp=="/.." && !stk.empty())
+            stk.pop();
+            else if(temp=="/..")
+            continue;
+            else if(temp=="/")
+            continue;
+            else if(temp=="/.")
+            continue;
+            else
+            stk.push(temp);
+        }
+        string res;
+        while(!stk.empty()){
+            res=stk.top()+res;
+            stk.pop();
+        }
+        if(res=="")
+        res+='/';
+        return res;
+    }
+};
+```
+
+### 12 Decode String
+
+Given an encoded string, return its decoded string.
+
+The encoding rule is: k[encoded_string], where the encoded_string inside the square brackets is being repeated exactly k times. Note that k is guaranteed to be a positive integer.
+
+You may assume that the input string is always valid; there are no extra white spaces, square brackets are well-formed, etc. Furthermore, you may assume that the original data does not contain any digits and that digits are only for those repeat numbers, k. For example, there will not be input like 3a or 2[4].
+
+The test cases are generated so that the length of the output will never exceed 10^5.
+
+```cpp
+class Solution {
+public:
+    string decodeString(string s) {
+        stack<string>stk;
+        int i=0;
+        while(i<s.size()){
+            if(s[i]>='0' && s[i]<='9'){
+                string cnt;
+                while(s[i]<='9' && s[i]>='0')
+                cnt+=s[i++];
+                stk.push(cnt);
+            }
+            else if(s[i]=='[' || (s[i]<='z' && s[i]>='a'))
+            stk.push(string(1,s[i++]));
+            else{
+                string temp;
+                while(stk.top()!="["){
+                    temp+=stk.top();
+                    stk.pop();
+                }
+                stk.pop();
+                int cnt=stoi(stk.top());
+                stk.pop();
+                string t;
+                while(cnt--){
+                    t+=temp;
+                }
+                stk.push(t);
+                i++;
+            }
+        }
+        string res;
+        while(!stk.empty())
+        {
+            res+=stk.top();
+            stk.pop();
+        }
+        reverse(res.begin(),res.end());
+        return res;
+    }
+};
+```
+
+### 13 Maximum Frequency Stack
+
+Design a stack-like data structure to push elements to the stack and pop the most frequent element from the stack.
+
+Implement the FreqStack class:
+
+FreqStack() constructs an empty frequency stack.
+void push(int val) pushes an integer val onto the top of the stack.
+int pop() removes and returns the most frequent element in the stack.
+If there is a tie for the most frequent element, the element closest to the stack's top is removed and returned.
+
+```cpp
+class FreqStack {
+    map<int,stack<int>>mp1;
+    map<int,int>freq;
+    int maxfreq=0;
+public:
+    FreqStack() {
+        
+    }
+    
+    void push(int val) {
+        int f=++freq[val];
+        maxfreq=max(maxfreq,f);
+        mp1[f].push(val);
+    }
+    
+    int pop() {
+        int val=mp1[maxfreq].top();
+        mp1[maxfreq].pop();
+        freq[val]--;
+        if(mp1[maxfreq].empty())
+        maxfreq--;
+        return val;
+    }
+};
+
+/**
+ * Your FreqStack object will be instantiated and called as such:
+ * FreqStack* obj = new FreqStack();
+ * obj->push(val);
+ * int param_2 = obj->pop();
+ */
+```
+
+### 14 Largest Rectangle in Histogram
+
+Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.
+
+```cpp
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        stack<int>stk;
+        int maxarea=0;
+        for(int i=0;i<heights.size();i++){
+            while(!stk.empty() && heights[stk.top()]>=heights[i]){
+                int top=stk.top();
+                stk.pop();
+                int width=stk.empty()?i:i-stk.top()-1;
+                maxarea=max(maxarea,heights[top]*width);
+            }
+            stk.push(i);
+        }
+        while(!stk.empty()){
+            int top=stk.top();
+            stk.pop();
+            int width=stk.empty()?heights.size():heights.size()-stk.top()-1;
+            maxarea=max(maxarea,heights[top]*width);
+        }
+        return maxarea;
+    }
+};
+```
