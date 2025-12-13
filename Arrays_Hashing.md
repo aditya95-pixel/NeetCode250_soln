@@ -164,3 +164,25 @@ public:
     }
 };
 ```
+
+### 8 Majority Element
+
+Given an array nums of size n, return the majority element.
+
+The majority element is the element that appears more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.
+
+```cpp
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        unordered_map<int,int>mp;
+        int n=nums.size();
+        for(auto num:nums){
+            mp[num]++;
+            if(mp[num]>n/2)
+            return num;
+        }
+        return -1;
+    }
+};
+```
