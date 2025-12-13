@@ -150,3 +150,211 @@ public:
     }
 };
 ```
+
+### 7 Two Sum II - Input Array Is Sorted
+
+Given a 1-indexed array of integers numbers that is already sorted in non-decreasing order, find two numbers such that they add up to a specific target number. Let these two numbers be numbers[index1] and numbers[index2] where 1 <= index1 < index2 <= numbers.length.
+
+Return the indices of the two numbers, index1 and index2, added by one as an integer array [index1, index2] of length 2.
+
+The tests are generated such that there is exactly one solution. You may not use the same element twice.
+
+Your solution must use only constant extra space.
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        vector<int>res;
+        int l=0,r=numbers.size()-1;
+        while(l<r){
+            if(numbers[l]+numbers[r]==target)
+            {
+                res.push_back(l+1);
+                res.push_back(r+1);
+                return res;
+            }else if(numbers[l]+numbers[r]<target)
+            l++;
+            else
+            r--;
+        }
+        return res;
+    }
+};
+```
+
+### 8 3Sum
+
+Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+
+Notice that the solution set must not contain duplicate triplets.
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(),nums.end());
+        vector<vector<int>>res;
+        for(int i=0;i<nums.size();i++){
+            if(i>0 && nums[i]==nums[i-1])
+            continue;
+            int j=i+1,k=nums.size()-1;
+            while(j<k){
+                if(nums[i]+nums[j]+nums[k]==0)
+                {
+                    res.push_back({nums[i],nums[j],nums[k]});
+                    while(j+1<k && nums[j]==nums[j+1])
+                    j++;
+                    j++;
+                    while(k-1>j && nums[k]==nums[k-1])
+                    k--;
+                    k--;
+                }
+                else if(nums[i]+nums[j]+nums[k]>0)
+                k--;
+                else
+                j++;
+            }
+        }
+        return res;
+    }
+};
+```
+
+### 9 4Sum
+
+Given an array nums of n integers, return an array of all the unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
+
+0 <= a, b, c, d < n
+a, b, c, and d are distinct.
+nums[a] + nums[b] + nums[c] + nums[d] == target
+You may return the answer in any order.
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        sort(nums.begin(),nums.end());
+        vector<vector<int>>res;
+        for(int i=0;i<nums.size();i++){
+            if(i>0 && nums[i]==nums[i-1])
+            continue;
+            for(int j=i+1;j<nums.size();j++){
+                if(j>i+1 && nums[j]==nums[j-1])
+                continue;
+                int k=j+1,t=nums.size()-1;
+                while(k<t){
+                    long long sum=(long long)nums[i]+nums[j]+nums[k]+nums[t];
+                    if(sum==target)
+                    {
+                        res.push_back({nums[i],nums[j],nums[k],nums[t]});
+                        while(k+1<t && nums[k]==nums[k+1])
+                        k++;
+                        k++;
+                        while(t-1>k && nums[t]==nums[t-1])
+                        t--;
+                        t--;
+                    }
+                    else if(sum>target)
+                    t--;
+                    else
+                    k++;
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+### 10 Rotate Array
+
+Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.
+
+```cpp
+class Solution {
+public:
+    void rotate(vector<int>& nums, int k) {
+        k%=nums.size();
+        reverse(nums.begin(),nums.begin()+(nums.size()-k));
+        reverse(nums.begin()+(nums.size()-k),nums.end());
+        reverse(nums.begin(),nums.end());
+    }
+};
+```
+
+### 11 Container With Most Water
+
+You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
+
+Find two lines that together with the x-axis form a container, such that the container contains the most water.
+
+Return the maximum amount of water a container can store.
+
+Notice that you may not slant the container.
+
+```cpp
+class Solution {
+public:
+    int maxArea(vector<int>& heights) {
+        int l=0,h=heights.size()-1,maxarea=0;
+        while(l<h){
+            maxarea=max(maxarea,min(heights[l],heights[h])*(h-l));
+            if(heights[l]>heights[h])
+            h--;
+            else
+            l++;
+        }
+        return maxarea;
+    }
+};
+```
+
+### 12 Boats to Save People
+
+You are given an array people where people[i] is the weight of the ith person, and an infinite number of boats where each boat can carry a maximum weight of limit. Each boat carries at most two people at the same time, provided the sum of the weight of those people is at most limit.
+
+Return the minimum number of boats to carry every given person.
+
+```cpp
+class Solution {
+public:
+    int numRescueBoats(vector<int>& people, int limit) {
+        sort(people.begin(),people.end());
+        int l=0,r=people.size()-1,cnt=0;
+        while(l<=r){
+            int rem=limit-people[r--];
+            cnt++;
+            if(l<=r && rem>=people[l])
+            l++;
+        }
+        return cnt;
+    }
+};
+```
+
+### 13 Trapping Rain Water
+
+Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+
+```cpp
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        stack<int>stk;
+        int vol=0;
+        for(int i=0;i<height.size();i++){
+            while(!stk.empty() && height[i]>=height[stk.top()]){
+                int curr=stk.top();
+                stk.pop();
+                if(stk.empty())
+                break;
+                int len=i-stk.top()-1;
+                vol+=(min(height[i],height[stk.top()])-height[curr])*len;
+            }
+            stk.push(i);
+        }
+        return vol;
+    }
+};
+```
