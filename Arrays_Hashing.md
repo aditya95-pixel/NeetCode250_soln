@@ -267,3 +267,48 @@ public:
  * obj->remove(key);
  */
  ```
+
+### 11 Sort an Array
+
+Given an array of integers nums, sort the array in ascending order and return it.
+
+You must solve the problem without using any built-in functions in O(nlog(n)) time complexity and with the smallest space complexity possible.
+
+```cpp
+class Solution {
+public:
+    void merge(vector<int>&nums,int l,int mid,int r){
+        int n1=mid-l+1,n2=r-mid;
+        vector<int>nums1(n1),nums2(n2);
+        for(int i=0;i<n1;i++)
+        nums1[i]=nums[l+i];
+        for(int i=0;i<n2;i++)
+        nums2[i]=nums[mid+i+1];
+        int k=l,i=0,j=0;
+        while(i<nums1.size() && j<nums2.size()){
+            if(nums1[i]<nums2[j])
+            {
+                nums[k++]=nums1[i++];
+            }else{
+                nums[k++]=nums2[j++];
+            }
+        }
+        while(i<nums1.size())
+        nums[k++]=nums1[i++];
+        while(j<nums2.size())
+        nums[k++]=nums2[j++];
+    }
+    void mergesort(vector<int>&nums,int l,int r){
+        if(l<r){
+            int mid=l+(r-l)/2;
+            mergesort(nums,l,mid);
+            mergesort(nums,mid+1,r);
+            merge(nums,l,mid,r); 
+        }
+    }
+    vector<int> sortArray(vector<int>& nums) {
+        mergesort(nums,0,nums.size()-1);
+        return nums;
+    }
+};
+```
