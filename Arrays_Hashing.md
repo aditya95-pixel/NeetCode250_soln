@@ -621,3 +621,81 @@ public:
     }
 };
 ```
+
+### 20 Majority Element II
+
+Given an integer array of size n, find all elements that appear more than ⌊ n/3 ⌋ times.
+
+```cpp
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& nums) {
+        unordered_map<int,int>mp;
+        int n=nums.size();
+        for(auto &num:nums)
+            mp[num]++;
+        vector<int>res;
+        for(auto &item:mp){
+            if(item.second>n/3)
+            res.push_back(item.first);
+        }
+        return res;
+    }
+};
+```
+
+### 21 Subarray Sum Equals K
+
+Given an array of integers nums and an integer k, return the total number of subarrays whose sum equals to k.
+
+A subarray is a contiguous non-empty sequence of elements within an array.
+
+```cpp
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        unordered_map<int,int>mp;
+        mp[0]=1;
+        int sum=0,cnt=0;        
+        for(int i=0;i<nums.size();i++){
+            sum+=nums[i];
+            if(mp.count(sum-k))
+            cnt+=mp[sum-k];
+            mp[sum]++;
+        }
+        return cnt;
+    }
+};
+```
+
+### 22 First Missing Positive
+
+Given an unsorted integer array nums. Return the smallest positive integer that is not present in nums.
+
+You must implement an algorithm that runs in O(n) time and uses O(1) auxiliary space.
+
+```cpp
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int i=0;
+        while(i<nums.size()){
+            if(nums[i]<=0 || nums[i]>nums.size())
+            {
+                i++;
+                continue;
+            }
+            int idx=nums[i]-1;
+            if(nums[i]!=nums[idx])
+            swap(nums[i],nums[idx]);
+            else
+            i++;
+        }
+        for(int i=0;i<nums.size();i++){
+            if(nums[i]!=i+1)
+            return i+1;
+        }
+        return nums.size()+1;
+    }
+};
+```
