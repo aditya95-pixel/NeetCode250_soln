@@ -300,7 +300,140 @@ public:
 };
 ```
 
-## 9 LRU Cache
+## 9 Reverse Linked List II
+
+Given the head of a singly linked list and two integers left and right where left <= right, reverse the nodes of the list from position left to position right, and return the reversed list.
+
+```cpp
+class Solution {
+public:
+    void reverse(ListNode*&first,ListNode*&last){
+        ListNode*r=first,*q=NULL,*p=NULL;
+        ListNode*conn=last->next;
+        last->next=NULL;
+        last=first;
+        while(r){
+            p=q;
+            q=r;
+            r=r->next;
+            q->next=p;
+        }
+        first=q;
+        last->next=conn;
+    }
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        int cnt=1;
+        ListNode*first,*last;
+        ListNode*ptr=head,*preptr;
+        while(ptr){
+            if(cnt==left-1)
+            preptr=ptr;
+            else if(cnt==left)
+            first=ptr;
+            else if(cnt==right)
+            last=ptr;
+            ptr=ptr->next;
+            cnt++;
+        }
+        if(left<right)
+        reverse(first,last);
+        if(left==1)
+        head=first;
+        else
+        preptr->next=first;
+        return head;
+    }
+};
+```
+
+## 10 Design Circular Queue
+
+Design your implementation of the circular queue. The circular queue is a linear data structure in which the operations are performed based on FIFO (First In First Out) principle, and the last position is connected back to the first position to make a circle. It is also called "Ring Buffer".
+
+One of the benefits of the circular queue is that we can make use of the spaces in front of the queue. In a normal queue, once the queue becomes full, we cannot insert the next element even if there is a space in front of the queue. But using the circular queue, we can use the space to store new values.
+
+Implement the MyCircularQueue class:
+
+MyCircularQueue(k) Initializes the object with the size of the queue to be k.
+int Front() Gets the front item from the queue. If the queue is empty, return -1.
+int Rear() Gets the last item from the queue. If the queue is empty, return -1.
+boolean enQueue(int value) Inserts an element into the circular queue. Return true if the operation is successful.
+boolean deQueue() Deletes an element from the circular queue. Return true if the operation is successful.
+boolean isEmpty() Checks whether the circular queue is empty or not.
+boolean isFull() Checks whether the circular queue is full or not.
+You must solve the problem without using the built-in queue data structure in your programming language. 
+
+```cpp
+class MyCircularQueue {
+    vector<int>q;
+    int front,rear,size;
+public:
+    MyCircularQueue(int k) {
+        size=k;
+        q.resize(k);
+        front=rear=-1;
+    }
+    
+    bool enQueue(int value) {
+        if(isFull())
+        return 0;
+        if(isEmpty())
+        front=0;
+        rear=(rear+1)%size;
+        q[rear]=value;
+        return 1;
+    }
+    
+    bool deQueue() {
+        if(isEmpty())
+        return 0;
+        else if(front==rear)
+            front=rear=-1;
+        else
+            front=(front+1)%size;
+        return 1;
+    }
+    
+    int Front() {
+        if(isEmpty())
+        return -1;
+        return q[front];
+    }
+    
+    int Rear() {
+        if(isEmpty())
+        return -1;
+        return q[rear];
+    }
+    
+    bool isEmpty() {
+        if(front==-1)
+        return 1;
+        else
+        return 0;
+    }
+    
+    bool isFull() {
+        if((rear+1)%size==front)
+        return 1;
+        else
+        return 0;
+    }
+};
+
+/**
+ * Your MyCircularQueue object will be instantiated and called as such:
+ * MyCircularQueue* obj = new MyCircularQueue(k);
+ * bool param_1 = obj->enQueue(value);
+ * bool param_2 = obj->deQueue();
+ * int param_3 = obj->Front();
+ * int param_4 = obj->Rear();
+ * bool param_5 = obj->isEmpty();
+ * bool param_6 = obj->isFull();
+ */
+```
+
+## 11 LRU Cache
 
 Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
 
@@ -378,7 +511,7 @@ public:
 };
 ```
 
-## 10 LFU Cache
+## 12 LFU Cache
 
 Design and implement a data structure for a Least Frequently Used (LFU) cache.
 
@@ -468,7 +601,7 @@ public:
 };
 ```
 
-## 11 Merge k Sorted Lists
+## 13 Merge k Sorted Lists
 
 You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
 
@@ -499,7 +632,7 @@ public:
 };
 ```
 
-## 12 Reverse Nodes in k-Group
+## 14 Reverse Nodes in k-Group
 
 Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
 
