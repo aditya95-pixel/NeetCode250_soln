@@ -1,4 +1,4 @@
-## Reverse Linked List
+## 1 Reverse Linked List
 
 Given the head of a singly linked list, reverse the list, and return the reversed list.
 
@@ -18,7 +18,7 @@ public:
 };
 ```
 
-## Merge Two Sorted Lists
+## 2 Merge Two Sorted Lists
 
 You are given the heads of two sorted linked lists list1 and list2.
 
@@ -60,7 +60,7 @@ public:
 };
 ```
 
-## Linked List Cycle
+## 3 Linked List Cycle
 
 Given head, the head of a linked list, determine if the linked list has a cycle in it.
 
@@ -86,7 +86,7 @@ public:
 };
 ```
 
-## Reorder List
+## 4 Reorder List
 
 You are given the head of a singly linked-list. The list can be represented as:
 
@@ -146,7 +146,7 @@ public:
 };
 ```
 
-## Remove Nth Node From End of List
+## 5 Remove Nth Node From End of List
 
 Given the head of a linked list, remove the nth node from the end of the list and return its head.
 
@@ -182,7 +182,7 @@ public:
 };
 ```
 
-## Copy List with Random Pointer
+## 6 Copy List with Random Pointer
 
 A linked list of length n is given such that each node contains an additional random pointer, which could point to any node in the list, or null.
 
@@ -233,7 +233,7 @@ public:
 };
 ```
 
-## Add Two Numbers
+## 7 Add Two Numbers
 
 You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
 
@@ -277,7 +277,7 @@ public:
 };
 ```
 
-## Find the Duplicate Number
+## 8 Find the Duplicate Number
 
 Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
 
@@ -300,7 +300,7 @@ public:
 };
 ```
 
-## LRU Cache
+## 9 LRU Cache
 
 Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
 
@@ -378,7 +378,97 @@ public:
 };
 ```
 
-## Merge k Sorted Lists
+## 10 LFU Cache
+
+Design and implement a data structure for a Least Frequently Used (LFU) cache.
+
+Implement the LFUCache class:
+
+LFUCache(int capacity) Initializes the object with the capacity of the data structure.
+int get(int key) Gets the value of the key if the key exists in the cache. Otherwise, returns -1.
+void put(int key, int value) Update the value of the key if present, or inserts the key if not already present. When the cache reaches its capacity, it should invalidate and remove the least frequently used key before inserting a new item. For this problem, when there is a tie (i.e., two or more keys with the same frequency), the least recently used key would be invalidated.
+To determine the least frequently used key, a use counter is maintained for each key in the cache. The key with the smallest use counter is the least frequently used key.
+
+When a key is first inserted into the cache, its use counter is set to 1 (due to the put operation). The use counter for a key in the cache is incremented either a get or put operation is called on it.
+
+The functions get and put must each run in O(1) average time complexity.
+
+```cpp
+class Node{
+    public:
+    int key,value,freq;
+    Node*next,*prev;
+    Node(int key,int value){
+        this->key=key;
+        this->value=value;
+        next=prev=NULL;
+        freq=1;
+    }
+};
+class LFUCache {
+    int cap,cnt;
+    Node*head,*tail;
+    map<int,Node*>mp;
+public:
+    LFUCache(int capacity) {
+        cap=capacity;
+        head=new Node(-1,-1);
+        tail=new Node(-1,-1);
+        head->next=tail;
+        tail->prev=head;
+        cnt=0;
+    }
+    
+    int get(int key) {
+        if(mp.count(key)){
+            Node*node=mp[key];
+            del(node);
+            node->freq++;
+            insert(node);
+            return node->value;
+        }else{
+            return -1;
+        }
+    }
+    
+    void put(int key, int value) {
+        if(mp.count(key)){
+            Node*node=mp[key];
+            del(node);
+            node->freq++;
+            insert(node);
+            node->value=value;
+        }else{
+            if(cnt==cap){
+                Node*delnode=tail->prev;
+                del(delnode);
+                mp.erase(delnode->key);
+                cnt--;
+            }
+            Node*node=new Node(key,value);
+            insert(node);
+            mp[key]=node;
+            cnt++;
+        }
+    }
+    void del(Node*node){
+        node->prev->next=node->next;
+        node->next->prev=node->prev;
+    }
+    void insert(Node*node){
+        Node*ptr=head->next;
+        while(ptr!=tail && ptr->freq>node->freq){
+            ptr=ptr->next;
+        }
+        ptr->prev->next=node;
+        node->prev=ptr->prev;
+        node->next=ptr;
+        ptr->prev=node;
+    }
+};
+```
+
+## 11 Merge k Sorted Lists
 
 You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
 
@@ -409,7 +499,7 @@ public:
 };
 ```
 
-## Reverse Nodes in k-Group
+## 12 Reverse Nodes in k-Group
 
 Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
 
