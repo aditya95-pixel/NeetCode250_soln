@@ -564,3 +564,199 @@ public:
     }
 };
 ```
+
+## 19 Construct Binary Tree from Preorder and Inorder Traversal
+
+Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.
+
+```cpp
+class Solution {
+    unordered_map<int,int>mp;
+public:
+    TreeNode* solve(vector<int>& preorder,int &preidx,int l,int r){
+        if(l>r)
+        return NULL;
+        int rootval=preorder[preidx++];
+        int mid=mp[rootval];
+        TreeNode*root=new TreeNode(rootval);
+        root->left=solve(preorder,preidx,l,mid-1);
+        root->right=solve(preorder,preidx,mid+1,r);
+        return root;
+    }
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        for(int i=0;i<inorder.size();i++)
+        mp[inorder[i]]=i;
+        int preidx=0;
+        return solve(preorder,preidx,0,preorder.size()-1);
+    }
+};
+```
+
+## 20 House Robber III
+
+The thief has found himself a new place for his thievery again. There is only one entrance to this area, called root.
+
+Besides the root, each house has one and only one parent house. After a tour, the smart thief realized that all houses in this place form a binary tree. It will automatically contact the police if two directly-linked houses were broken into on the same night.
+
+Given the root of the binary tree, return the maximum amount of money the thief can rob without alerting the police.
+
+```cpp
+class Solution {
+    int maxsum=0;
+    unordered_map<TreeNode*,unordered_map<bool,int>>mp;
+public:
+    int find(TreeNode* root,bool take){
+        if(!root)
+        return 0;
+        if(mp.count(root) && mp[root].count(take))
+        return mp[root][take];
+        else
+        return mp[root][take]=solve(root,take);
+    }
+    int solve(TreeNode* root,bool take){
+        if(!root)
+            return 0;
+        if(take){
+            int s1=find(root->left,!take);
+            int s2=find(root->right,!take);
+            return s1+s2+root->val;
+        }
+        else{
+            int s1=find(root->left,!take);
+            s1=max(s1,find(root->left,take));
+            int s2=find(root->right,!take);
+            s2=max(s2,find(root->right,take));
+            return s1+s2;
+        }
+    }
+    int rob(TreeNode* root) {
+        int sum1=find(root,0);
+        int sum2=find(root,1);
+        maxsum=max(sum1,sum2);
+        return maxsum;
+    }
+};
+```
+
+## 21 Delete Leaves With a Given Value
+
+Given a binary tree root and an integer target, delete all the leaf nodes with value target.
+
+Note that once you delete a leaf node with value target, if its parent node becomes a leaf node and has the value target, it should also be deleted (you need to continue doing that until you cannot).
+
+```cpp
+class Solution {
+public:
+    TreeNode* solve(TreeNode*root,int target){
+        if(!root)
+        return NULL;
+        root->left=solve(root->left,target);
+        root->right=solve(root->right,target);
+        if(!root->left && !root->right && root->val==target)
+            return NULL;
+        return root;
+    }
+    TreeNode* removeLeafNodes(TreeNode* root, int target) {
+        return solve(root,target);
+    }
+};
+```
+
+## 22 Binary Tree Maximum Path Sum
+
+A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them. A node can only appear in the sequence at most once. Note that the path does not need to pass through the root.
+
+The path sum of a path is the sum of the node's values in the path.
+
+Given the root of a binary tree, return the maximum path sum of any non-empty path.
+
+```cpp
+class Solution {
+    int maxsum=INT_MIN;
+public:
+    int solve(TreeNode* root){
+        if(!root)
+        return 0;
+        int leftsum=max(0,solve(root->left)),rightsum=max(0,solve(root->right));
+        maxsum=max(maxsum,root->val+leftsum+rightsum);
+        return max(leftsum,rightsum)+root->val;
+    }
+    int maxPathSum(TreeNode* root) {
+        solve(root);
+        return maxsum;
+    }
+};
+```
+
+## 23 Serialize and Deserialize Binary Tree
+
+Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+
+Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.
+
+Clarification: The input/output format is the same as how LeetCode serializes a binary tree. You do not necessarily need to follow this format, so please be creative and come up with different approaches yourself.
+
+```cpp
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        if(!root)
+        return "#";
+        string res;
+        queue<TreeNode*>q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode* node=q.front();
+            q.pop();
+            if(node->val!=-9999)
+            res+=to_string(node->val)+"\t";
+            else
+            {res+="#\t";continue;}
+            if(node->left)
+            q.push(node->left);
+            else
+            q.push(new TreeNode(-9999));
+            if(node->right)
+            q.push(node->right);
+            else
+            q.push(new TreeNode(-9999));
+        }
+        return res;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if(data=="#")
+        return NULL;
+        int i=0;
+        string rootnum=data.substr(i,data.find('\t'));
+        TreeNode*root=new TreeNode(stoi(rootnum));
+        i+=rootnum.size()+1;
+        queue<TreeNode*>q;
+        q.push(root);
+        while(!q.empty()){
+            TreeNode* node=q.front();
+            q.pop();
+            string temp=data.substr(i,data.substr(i).find('\t'));
+            if(temp=="#")
+            i+=temp.size()+1;
+            else{
+                node->left=new TreeNode(stoi(temp));
+                q.push(node->left);
+                i+=temp.size()+1;
+            }
+            temp=data.substr(i,data.substr(i).find('\t'));
+            if(temp=="#")
+            i+=temp.size()+1;
+            else{
+                node->right=new TreeNode(stoi(temp));
+                q.push(node->right);
+                i+=temp.size()+1;
+            }
+        }
+        return root;
+    }
+};
+```
