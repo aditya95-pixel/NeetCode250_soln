@@ -699,3 +699,43 @@ public:
     }
 };
 ```
+
+## 23 Find the Index of the First Occurrence in a String
+
+Given two strings needle and haystack, return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+
+```cpp
+class Solution {
+public:
+    vector<int>prefix(string s){
+        vector<int>pi(s.size(),0);
+        for(int i=1;i<s.size();i++){
+            int j=pi[i-1];
+            while(j>0 && s[i]!=s[j])
+            j=pi[j-1];
+            if(s[i]==s[j])
+            j++;
+            pi[i]=j;
+        }
+        return pi;
+    }
+    int strStr(string txt, string pat) {
+        vector<int>pi=prefix(pat);
+        int i=0,j=0;
+        while(i<txt.size()){
+            if(pat[j]==txt[i]){
+                i++;
+                j++;
+            }else{
+                if(j>0)
+                j=pi[j-1];
+                else
+                i++;
+            }
+            if(j==pat.size())
+            return i-j;
+        }
+        return -1;
+    }
+};
+```
