@@ -269,3 +269,65 @@ public:
     }
 };
 ```
+
+## 8 Reorganize String
+
+Given a string s, rearrange the characters of s so that any two adjacent characters are not the same.
+
+Return any possible rearrangement of s or return "" if not possible.
+
+```cpp
+class Solution {
+public:
+    string reorganizeString(string s) {
+        priority_queue<pair<int,char>>pq;
+        vector<int>freq(26,0);
+        for(auto &c:s)
+        freq[c-'a']++;
+        for(int i=0;i<26;i++)
+        {
+            if(freq[i]>0)
+            pq.push({freq[i],(char)(i+'a')});
+        }
+        string res;
+        int cnt=0;
+        while(pq.size()>1){
+            char c1=pq.top().second;
+            int freq1=pq.top().first;
+            pq.pop();
+            char c2=pq.top().second;
+            int freq2=pq.top().first;
+            pq.pop();
+            if(freq1>freq2){
+                res+=c1;
+                res+=c2;
+                freq1--;
+                freq2--;
+                if(freq1)
+                pq.push({freq1,c1});
+                if(freq2)
+                pq.push({freq2,c2});
+            }else{
+                res+=c1;
+                res+=c2;
+                freq1--;
+                freq2--;
+                if(freq1)
+                pq.push({freq1,c1});
+                if(freq2)
+                pq.push({freq2,c2});
+            }
+        }
+        if(pq.empty())
+        return res;
+        char c=pq.top().second;
+        int f=pq.top().first;
+        if(f==1)
+        {
+            res+=c;
+            return res;
+        }else
+        return "";
+    }
+};
+```
