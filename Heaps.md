@@ -146,4 +146,126 @@ public:
 };
 ```
 
-## 
+## 6 Design Twitter
+
+Design a simplified version of Twitter where users can post tweets, follow/unfollow another user, and is able to see the 10 most recent tweets in the user's news feed.
+
+Implement the Twitter class:
+
+Twitter() Initializes your twitter object.
+void postTweet(int userId, int tweetId) Composes a new tweet with ID tweetId by the user userId. Each call to this function will be made with a unique tweetId.
+List<Integer> getNewsFeed(int userId) Retrieves the 10 most recent tweet IDs in the user's news feed. Each item in the news feed must be posted by users who the user followed or by the user themself. Tweets must be ordered from most recent to least recent.
+void follow(int followerId, int followeeId) The user with ID followerId started following the user with ID followeeId.
+void unfollow(int followerId, int followeeId) The user with ID followerId started unfollowing the user with ID followeeId.
+
+```cpp
+class Twitter {
+    map<int,set<vector<int>>>mp;
+    map<int,set<int>>followees;
+    int time=1;
+public:
+    Twitter() {
+        
+    }
+    
+    void postTweet(int userId, int tweetId) {
+        mp[userId].insert({time++,tweetId});
+    }
+    
+    vector<int> getNewsFeed(int userId) {
+        int cnt=10;
+        priority_queue<vector<int>>pq;
+        vector<int>res;
+        for(auto item:mp[userId])
+        pq.push(item);
+        for(auto f:followees[userId])
+        {
+            for(auto item:mp[f])
+            pq.push(item);
+        }
+        while(cnt && !pq.empty()){
+            int twtId=pq.top()[1];
+            pq.pop();
+            cnt--;
+            res.push_back(twtId);
+        }
+        return res;
+    }
+    
+    void follow(int followerId, int followeeId) {
+        followees[followerId].insert(followeeId);
+    }
+    
+    void unfollow(int followerId, int followeeId) {
+        followees[followerId].erase(followeeId);
+    }
+};
+```
+
+## 7 Single-Threaded CPU
+
+You are given n​​​​​​ tasks labeled from 0 to n - 1 represented by a 2D integer array tasks, where tasks[i] = [enqueueTimei, processingTimei] means that the i​​​​​​th​​​​ task will be available to process at enqueueTimei and will take processingTimei to finish processing.
+
+You have a single-threaded CPU that can process at most one task at a time and will act in the following way:
+
+If the CPU is idle and there are no available tasks to process, the CPU remains idle.
+If the CPU is idle and there are available tasks, the CPU will choose the one with the shortest processing time. If multiple tasks have the same shortest processing time, it will choose the task with the smallest index.
+Once a task is started, the CPU will process the entire task without stopping.
+The CPU can finish a task then start a new one instantly.
+Return the order in which the CPU will process the tasks.
+
+```cpp
+class Solution {
+public:
+    static bool cmp(vector<int>&a,vector<int>&b){
+        if(a[0]<b[0])
+        return 1;
+        else if(a[0]>b[0])
+        return 0;
+        else
+        return (a[1]<b[1]);
+    }
+    vector<int> getOrder(vector<vector<int>>& tasks) {
+        vector<vector<int>>tsks;
+        for(int i=0;i<tasks.size();i++){
+            vector<int> task=tasks[i];
+            tsks.push_back({task[0],task[1],i});
+        }
+        sort(tsks.begin(),tsks.end(),cmp);
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<>>pq;
+        long long time=tsks[0][0];
+        int i=0;
+        while(i<tsks.size() && time==tsks[i][0]){
+            pq.push({tsks[i][1],tsks[i][2]});
+            i++;
+        }
+        vector<int>res;
+        while(i<tsks.size()){
+            if(!pq.empty()){
+                int dur=pq.top().first,idx=pq.top().second;
+                pq.pop();
+                time+=dur;
+                res.push_back(idx);
+                while(i<tsks.size() && time>=tsks[i][0])
+                {
+                    pq.push({tsks[i][1],tsks[i][2]});
+                    i++;
+                }
+            }else{
+                time=tsks[i][0];
+                while(i<tsks.size() && time==tsks[i][0]){
+                    pq.push({tsks[i][1],tsks[i][2]});
+                    i++;
+                }
+            }
+        }
+        while(!pq.empty()){
+            int dur=pq.top().first,idx=pq.top().second;
+            pq.pop();
+            time+=dur;
+            res.push_back(idx);
+        }
+        return res;
+    }
+};
+```
