@@ -132,3 +132,65 @@ public:
 };
 ```
 
+## 5 Combinations
+
+Given two integers n and k, return all possible combinations of k numbers chosen from the range [1, n].
+
+You may return the answer in any order.
+
+```cpp
+class Solution {
+public:
+    void solve(int n,int k,vector<vector<int>>&res,vector<int>&temp,int curr){
+        if(curr>n && k>0)
+        return ;
+        if(k==0){
+            res.push_back(temp);
+            return ;
+        }
+        solve(n,k,res,temp,curr+1);
+        temp.push_back(curr);
+        solve(n,k-1,res,temp,curr+1);
+        temp.pop_back();
+    }
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>>res;
+        vector<int>temp;
+        solve(n,k,res,temp,1);
+        return res;
+    }
+};
+```
+
+## 6 Permutations
+
+Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.
+
+```cpp
+class Solution {
+public:
+    void solve(set<int>s,vector<int>&nums,vector<vector<int>>&res,vector<int>&temp){
+        if(s.size()==0)
+        {
+            res.push_back(temp);
+            return ;
+        }
+        for(auto &ele:nums){
+            if(s.count(ele)){
+                temp.push_back(ele);
+                s.erase(ele);
+                solve(s,nums,res,temp);
+                s.insert(ele);
+                temp.pop_back();
+            }
+        }
+    }
+    vector<vector<int>> permute(vector<int>& nums) {
+        set<int>s(nums.begin(),nums.end());
+        vector<vector<int>>res;
+        vector<int>temp;
+        solve(s,nums,res,temp);
+        return res;
+    }
+};
+```
