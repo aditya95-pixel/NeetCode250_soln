@@ -194,3 +194,34 @@ public:
     }
 };
 ```
+
+## 7 Subsets II
+
+Given an integer array nums that may contain duplicates, return all possible subsets (the power set).
+
+The solution set must not contain duplicate subsets. Return the solution in any order.
+
+```cpp
+class Solution{
+public:
+    void solve(vector<int>&nums,vector<vector<int>>&res,vector<int>&temp,int idx,int skip){
+        if(idx==nums.size()){
+            res.push_back(temp);
+            return ;
+        }
+        solve(nums,res,temp,idx+1,nums[idx]);
+        if(skip==nums[idx])
+        return ;
+        temp.push_back(nums[idx]);
+        solve(nums,res,temp,idx+1,INT_MIN);
+        temp.pop_back();
+    }
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        sort(nums.begin(),nums.end());
+        vector<vector<int>>res;
+        vector<int>temp;
+        solve(nums,res,temp,0,INT_MIN);
+        return res;
+    }
+};
+```
