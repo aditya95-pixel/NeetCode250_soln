@@ -491,3 +491,113 @@ public:
     }
 };
 ```
+
+## 15 N-Queens
+
+The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.
+
+Given an integer n, return all distinct solutions to the n-queens puzzle. You may return the answer in any order.
+
+Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.
+
+```cpp
+class Solution {
+public:
+    bool check(vector<string>&board,int row,int col){
+        for(int i=0;i<row;i++){
+            if(board[i][col]=='Q')
+            return 0;
+        }
+        int i1=row-1,j1=col-1;
+        while(i1>=0 && j1>=0){
+            if(board[i1][j1]=='Q')
+            return 0;
+            i1--;
+            j1--;
+        }
+        i1=row-1;
+        j1=col+1;
+        while(i1>=0 && j1<board.size()){
+            if(board[i1][j1]=='Q')
+            return 0;
+            i1--;
+            j1++;
+        }
+        return 1;
+    }
+    void solve(vector<vector<string>>&res,vector<string>&board,int i){
+        if(i==board.size()){
+            res.push_back(board);
+            return ;
+        }
+        for(int j=0;j<board.size();j++){
+            if(check(board,i,j))
+            {
+                board[i][j]='Q';
+                solve(res,board,i+1);
+                board[i][j]='.';
+            }
+        }
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>>res;
+        vector<string>board(n,string(n,'.'));
+        solve(res,board,0);
+        return res;
+    }
+};
+```
+
+## 16 N-Queens II
+
+The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.
+
+Given an integer n, return the number of distinct solutions to the n-queens puzzle.
+
+```cpp
+class Solution {
+    int cnt=0;
+public:
+    bool check(vector<string>&board,int row,int col){
+        for(int i=0;i<row;i++){
+            if(board[i][col]=='Q')
+            return 0;
+        }
+        int i1=row-1,j1=col-1;
+        while(i1>=0 && j1>=0){
+            if(board[i1][j1]=='Q')
+            return 0;
+            i1--;
+            j1--;
+        }
+        i1=row-1;
+        j1=col+1;
+        while(i1>=0 && j1<board.size()){
+            if(board[i1][j1]=='Q')
+            return 0;
+            i1--;
+            j1++;
+        }
+        return 1;
+    }
+    void solve(vector<string>&board,int i){
+        if(i==board.size()){
+            cnt++;
+            return ;
+        }
+        for(int j=0;j<board.size();j++){
+            if(check(board,i,j))
+            {
+                board[i][j]='Q';
+                solve(board,i+1);
+                board[i][j]='.';
+            }
+        }
+    }
+    int totalNQueens(int n) {
+        vector<string>board(n,string(n,'.'));
+        solve(board,0);
+        return cnt;
+    }
+};
+```
