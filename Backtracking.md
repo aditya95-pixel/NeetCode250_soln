@@ -225,3 +225,38 @@ public:
     }
 };
 ```
+
+## 8 Permutations II
+
+Given a collection of numbers, nums, that might contain duplicates, return all possible unique permutations in any order.
+
+```cpp
+class Solution {
+public:
+    void solve(multiset<int>s,vector<int>&nums,vector<vector<int>>&res,vector<int>&temp){
+        if(s.size()==0)
+        {
+            res.push_back(temp);
+            return ;
+        }
+        set<int>used;
+        for(auto &ele:nums){
+            if(!used.count(ele) && s.count(ele)){
+                temp.push_back(ele);
+                s.erase(s.lower_bound(ele));
+                solve(s,nums,res,temp);
+                s.insert(ele);
+                temp.pop_back();
+            }
+            used.insert(ele);
+        }
+    }
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        multiset<int>s(nums.begin(),nums.end());
+        vector<vector<int>>res;
+        vector<int>temp;
+        solve(s,nums,res,temp);
+        return res;
+    }
+};
+```
