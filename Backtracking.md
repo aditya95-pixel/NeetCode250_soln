@@ -379,3 +379,38 @@ public:
     }
 };
 ```
+
+## 12 Letter Combinations of a Phone Number
+
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
+
+A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+
+```cpp
+class Solution {
+public:
+    void solve(string &digits,map<char,vector<char>>&mp,vector<string>&res,string &temp){
+        if(temp.size()==digits.size()){
+            res.push_back(temp);
+            return ;
+        }
+        int i=temp.size();
+        for(auto &c:mp[digits[i]]){
+            temp+=c;
+            solve(digits,mp,res,temp);
+            temp.pop_back();
+        }
+    }
+    vector<string> letterCombinations(string digits) {
+        vector<string>res;
+        if(digits.size()==0)
+        return res;
+        map<char,vector<char>>mp={{'2',{'a','b','c'}},{'3',{'d','e','f'}},
+        {'4',{'g','h','i'}},{'5',{'j','k','l'}},{'6',{'m','n','o'}},
+        {'7',{'p','q','r','s'}},{'8',{'t','u','v'}},{'9',{'w','x','y','z'}}};
+        string temp;
+        solve(digits,mp,res,temp);
+        return res;
+    }
+};
+```
