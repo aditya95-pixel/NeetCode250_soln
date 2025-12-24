@@ -342,3 +342,40 @@ public:
     }
 };
 ```
+
+## 11 Palindrome Partitioning
+
+Given a string s, partition s such that every substring of the partition is a palindrome. Return all possible palindrome partitioning of s.
+
+```cpp
+class Solution {
+public:
+    bool ispalin(string str){
+        for(int i=0;i<str.size()/2;i++){
+            if(str[i]!=str[str.size()-i-1])
+            return 0;
+        }
+        return 1;
+    }
+    void solve(string &s,vector<vector<string>>&res,vector<string>&temp,int idx){
+        if(idx==s.size()){
+            res.push_back(temp);
+            return ;
+        }
+        for(int i=idx;i<s.size();i++){
+            string str=s.substr(idx,i-idx+1);
+            if(ispalin(str)){
+                temp.push_back(str);
+                solve(s,res,temp,i+1);
+                temp.pop_back();
+            }
+        }
+    }
+    vector<vector<string>> partition(string s) {
+        vector<vector<string>>res;
+        vector<string>temp;
+        solve(s,res,temp,0);
+        return res;
+    }
+};
+```
