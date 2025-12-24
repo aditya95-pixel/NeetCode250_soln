@@ -601,3 +601,33 @@ public:
     }
 };
 ```
+
+## 17 Word Break II
+
+Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word is a valid dictionary word. Return all such possible sentences in any order.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+```cpp
+class Solution {
+public:
+    void solve(string s,vector<string>&res,string temp,set<string>&seto,int end){
+        if(end<0){
+            res.push_back(temp);
+            return ;
+        }
+        for(int i=end;i>=0;i--){
+            string str=s.substr(i,end-i+1);
+            if(seto.count(str))
+                solve(s,res,str+((temp=="")?"":" ")+temp,seto,i-1);
+        }
+    }
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        set<string>seto(wordDict.begin(),wordDict.end());
+        vector<string>res;
+        string temp;
+        solve(s,res,temp,seto,s.size()-1);
+        return res;
+    }
+};
+```
