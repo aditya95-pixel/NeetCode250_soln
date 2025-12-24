@@ -112,14 +112,16 @@ public:
             res.push_back(temp);
             return ;
         }
+        set<int>used;
         for(int i=idx;i<nums.size();i++){
-            if(i>idx && nums[i]==nums[i-1])
+            if(used.count(nums[i]))
             continue;
             temp.push_back(nums[i]);
             sum+=nums[i];
             solve(nums,target,sum,res,temp,i+1);
             sum-=nums[i];
             temp.pop_back();
+            used.insert(nums[i]);
         }
     }
     vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
