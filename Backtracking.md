@@ -260,3 +260,38 @@ public:
     }
 };
 ```
+
+## 9 Generate Parentheses
+
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+```cpp
+class Solution {
+public:
+    void solve(vector<string>&res,string&temp,int op,int cp,int n){
+        if(op==n && cp==n)
+        {
+            res.push_back(temp);
+            return ;
+        }
+        if(op<n)
+        {
+            temp+='(';
+            solve(res,temp,op+1,cp,n);
+            temp.pop_back();
+        }
+        if(op>cp)
+        {
+            temp+=')';
+            solve(res,temp,op,cp+1,n);
+            temp.pop_back();
+        }
+    }
+    vector<string> generateParenthesis(int n) {
+        vector<string>res;
+        string temp;
+        solve(res,temp,0,0,n);
+        return res;
+    }
+};
+```
