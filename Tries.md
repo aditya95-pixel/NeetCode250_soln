@@ -127,19 +127,11 @@ class Trie{
         else if(idx<word.size() && word[idx]!='.' && !it->next[word[idx]-'a'])
         return 0;
         else if(idx<word.size() && word[idx]!='.' && it->next[word[idx]-'a'])
-        {
-            it=it->next[word[idx]-'a'];
-            return solve(word,idx+1,it);
-        }
+        return solve(word,idx+1,it->next[word[idx]-'a']);
         else if(idx<word.size() && word[idx]=='.'){
             for(int j=0;j<26;j++){
-                if(it->next[(char)('a'+j)-'a']){
-                    Node*it_=it;
-                    it=it->next[(char)('a'+j)-'a'];
-                    if(solve(word,idx+1,it))
+                if(it->next[j] && solve(word,idx+1,it->next[j]))
                     return 1;
-                    it=it_;
-                }
             }
             return 0;
         }
