@@ -184,3 +184,96 @@ public:
     }
 };
 ```
+
+## 4 Word Search II
+
+Given an m x n board of characters and a list of strings words, return all words on the board.
+
+Each word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.
+
+```cpp
+class Trie{
+    public:
+    class Node{
+        public:
+        int end;
+        Node*next[26];
+        Node(){
+            for(int i=0;i<26;i++)
+            next[i]=NULL;
+            end=0;
+        }
+    };
+    Node* trie;
+    Trie(){
+        trie=new Node();
+    }
+    void insert(string &word){
+        Node*it=trie;
+        for(int i=0;i<word.size();i++){
+            if(!it->next[word[i]-'a'])
+            it->next[word[i]-'a']=new Node();
+            it=it->next[word[i]-'a'];
+        }
+        it->end=1;
+    }
+    bool search(string &word){
+        Node*it=trie;
+        for(int i=0;i<word.size();i++){
+            if(!it->next[word[i]-'a'])
+            return 0;
+            it=it->next[word[i]-'a'];
+        }
+        if(it->end)
+        {
+            it->end=0;
+            return 1;
+        }else
+        return 0;
+    }
+    bool startswith(string &word){
+        Node*it=trie;
+        for(int i=0;i<word.size();i++){
+            if(!it->next[word[i]-'a'])
+            return 0;
+            it=it->next[word[i]-'a'];
+        }
+        return 1;
+    }
+};
+class Solution {
+public:
+    void dfs(int i,int j,vector<vector<char>>& board,Trie*it,string &temp,vector<string>&res){
+        char c=board[i][j];
+        if(c=='.')
+        return ;        
+        temp+=c;
+        if(!it->startswith(temp)){
+            temp.pop_back();
+            return ;
+        }
+        board[i][j]='.';
+        if(it->search(temp))
+            res.push_back(temp);
+        if(i>0) dfs(i-1,j,board,it,temp,res);
+        if(j>0) dfs(i,j-1,board,it,temp,res);
+        if(i<board.size()-1) dfs(i+1,j,board,it,temp,res);
+        if(j<board[0].size()-1) dfs(i,j+1,board,it,temp,res);
+        temp.pop_back();
+        board[i][j]=c;
+    }
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        Trie*t=new Trie();
+        for(auto &word:words)
+            t->insert(word);
+        vector<string>res;
+        for(int i=0;i<board.size();i++){
+            for(int j=0;j<board[0].size();j++){
+                string temp;
+                dfs(i,j,board,t,temp,res);
+            }
+        }
+        return res;
+    }
+};
+```
