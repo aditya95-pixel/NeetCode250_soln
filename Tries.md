@@ -158,3 +158,29 @@ public:
     }
 };
 ```
+
+## 3 Extra Characters in a String
+
+You are given a 0-indexed string s and a dictionary of words dictionary. You have to break s into one or more non-overlapping substrings such that each substring is present in dictionary. There may be some extra characters in s which are not present in any of the substrings.
+
+Return the minimum number of extra characters left over if you break up s optimally.
+
+```cpp
+class Solution {
+public:
+    int minExtraChar(string s, vector<string>& dictionary) {
+        set<string>seto(dictionary.begin(),dictionary.end());
+        vector<int>dp(s.size()+1,0);
+        for(int i=s.size()-1;i>=0;i--){
+            dp[i]=1+dp[i+1];
+            string str;
+            for(int j=i;j<s.size();j++){
+                str+=s[j];
+                if(seto.count(str))
+                dp[i]=min(dp[i],dp[j+1]);
+            }
+        }
+        return dp[0];
+    }
+};
+```
