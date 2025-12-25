@@ -79,3 +79,90 @@ public:
     }
 };
 ```
+
+## 2 Design Add and Search Words Data Structure
+
+Design a data structure that supports adding new words and finding if a string matches any previously added string.
+
+Implement the WordDictionary class:
+
+WordDictionary() Initializes the object.
+void addWord(word) Adds word to the data structure, it can be matched later.
+bool search(word) Returns true if there is any string in the data structure that matches word or false otherwise. word may contain dots '.' where dots can be matched with any letter.
+
+```cpp
+class Trie{
+    public:
+    class Node{
+        public:
+        bool end;
+        Node*next[26];
+        Node(){
+            end=0;
+            for(int i=0;i<26;i++)
+            next[i]=NULL;
+        }
+    };
+    Node*trie;
+    Trie(){
+        trie=new Node();
+    }
+    void insert(string word){
+        Node*it=trie;
+        for(int i=0;i<word.size();i++){
+            if(!it->next[word[i]-'a'])
+            {
+                it->next[word[i]-'a']=new Node();
+                it=it->next[word[i]-'a'];
+            }else
+            it=it->next[word[i]-'a'];
+        }
+        it->end=1;
+    }
+    bool solve(string word,int idx,Node*it){
+        if(idx==word.size() && it->end)
+        return 1;
+        else if(idx==word.size())
+        return 0;
+        else if(idx<word.size() && word[idx]!='.' && !it->next[word[idx]-'a'])
+        return 0;
+        else if(idx<word.size() && word[idx]!='.' && it->next[word[idx]-'a'])
+        {
+            it=it->next[word[idx]-'a'];
+            return solve(word,idx+1,it);
+        }
+        else if(idx<word.size() && word[idx]=='.'){
+            for(int j=0;j<26;j++){
+                if(it->next[(char)('a'+j)-'a']){
+                    Node*it_=it;
+                    it=it->next[(char)('a'+j)-'a'];
+                    if(solve(word,idx+1,it))
+                    return 1;
+                    it=it_;
+                }
+            }
+            return 0;
+        }
+        return 0;
+    }
+    bool search(string word){
+        Node*it=trie;
+        return solve(word,0,it);
+    }
+};
+class WordDictionary {
+    Trie*trie;
+public:
+    WordDictionary() {
+        trie=new Trie();
+    }
+    
+    void addWord(string word) {
+        trie->insert(word);
+    }
+    
+    bool search(string word) {
+        return trie->search(word);
+    }
+};
+```
