@@ -166,3 +166,58 @@ public:
     }
 };
 ```
+
+## 5 Max Area of Island
+
+You are given an m x n binary matrix grid. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.
+
+The area of an island is the number of cells with a value 1 in the island.
+
+Return the maximum area of an island in grid. If there is no island, return 0.
+
+```cpp
+class Solution {
+public:
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        int maxcnt=0;
+        vector<vector<bool>>vis(grid.size(),vector<bool>(grid[0].size(),0));
+        for(int i=0;i<grid.size();i++){
+            for(int j=0;j<grid[0].size();j++){
+                if(grid[i][j]==1 && !vis[i][j]){
+                    int cnt=0;
+                    queue<pair<int,int>>q;
+                    q.push({i,j});
+                    vis[i][j]=1;
+                    while(!q.empty()){
+                        int i1=q.front().first,j1=q.front().second;
+                        q.pop();
+                        cnt++;
+                        if(i1-1>=0 && grid[i1-1][j1]==1 && !vis[i1-1][j1])
+                        {
+                            q.push({i1-1,j1});
+                            vis[i1-1][j1]=1;
+                        }
+                        if(j1-1>=0 && grid[i1][j1-1]==1 && !vis[i1][j1-1])
+                        {
+                            q.push({i1,j1-1});
+                            vis[i1][j1-1]=1;
+                        }
+                        if(i1+1<grid.size() && grid[i1+1][j1]==1 && !vis[i1+1][j1])
+                        {
+                            q.push({i1+1,j1});
+                            vis[i1+1][j1]=1;
+                        }
+                        if(j1+1<grid[0].size() && grid[i1][j1+1]==1 && !vis[i1][j1+1])
+                        {
+                            q.push({i1,j1+1});
+                            vis[i1][j1+1]=1;
+                        }
+                    }
+                    maxcnt=max(maxcnt,cnt);
+                }
+            }
+        }
+        return maxcnt;
+    }
+};
+```
