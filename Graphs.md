@@ -275,3 +275,59 @@ public:
     }
 };
 ```
+
+## 7 Islands and Treasure
+
+You are given a m×n 2D grid initialized with these three possible values:
+
+-1 - A water cell that can not be traversed.
+0 - A treasure chest.
+INF - A land cell that can be traversed. We use the integer 2^31 - 1 = 2147483647 to represent INF.
+Fill each land cell with the distance to its nearest treasure chest. If a land cell cannot reach a treasure chest then the value should remain INF.
+
+Assume the grid can only be traversed up, down, left, or right.
+
+Modify the grid in-place.
+
+```cpp
+class Solution {
+public:
+    void islandsAndTreasure(vector<vector<int>>& grid) {
+        const int INF=2147483647;
+        queue<vector<int>>q;
+        vector<vector<bool>>vis(grid.size(),vector<bool>(grid[0].size(),0));
+        for(int i=0;i<grid.size();i++){
+            for(int j=0;j<grid[0].size();j++){
+                if(grid[i][j]==0){
+                    q.push({i,j,0});
+                    vis[i][j]=1;
+                }
+            }
+        }
+        while(!q.empty()){
+            int i=q.front()[0],j=q.front()[1],dist=q.front()[2];
+            q.pop();
+            if(i-1>=0 && grid[i-1][j]==INF && !vis[i-1][j]){
+                vis[i-1][j]=1;
+                grid[i-1][j]=dist+1;
+                q.push({i-1,j,dist+1});
+            }
+            if(j-1>=0 && grid[i][j-1]==INF && !vis[i][j-1]){
+                vis[i][j-1]=1;
+                grid[i][j-1]=dist+1;
+                q.push({i,j-1,dist+1});
+            }
+            if(i+1<grid.size() && grid[i+1][j]==INF && !vis[i+1][j]){
+                vis[i+1][j]=1;
+                grid[i+1][j]=dist+1;
+                q.push({i+1,j,dist+1});
+            }
+            if(j+1<grid[0].size() && grid[i][j+1]==INF && !vis[i][j+1]){
+                vis[i][j+1]=1;
+                grid[i][j+1]=dist+1;
+                q.push({i,j+1,dist+1});
+            }
+        }
+    }
+};
+```
