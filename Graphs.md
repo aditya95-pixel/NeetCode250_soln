@@ -331,3 +331,62 @@ public:
     }
 };
 ```
+
+## 8 Rotting Oranges
+
+You are given an m x n grid where each cell can have one of three values:
+
+0 representing an empty cell,
+1 representing a fresh orange, or
+2 representing a rotten orange.
+Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
+
+Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+
+```cpp
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        queue<vector<int>>q;
+        for(int i=0;i<grid.size();i++){
+            for(int j=0;j<grid[0].size();j++){
+                if(grid[i][j]==2)
+                    q.push({i,j,0});
+            }
+        }
+        int time=0;
+        while(!q.empty()){
+            int i=q.front()[0],j=q.front()[1],t=q.front()[2];
+            time=t;
+            q.pop();
+            if(i-1>=0 && grid[i-1][j]==1)
+            {
+                q.push({i-1,j,t+1});
+                grid[i-1][j]=2;
+            }
+            if(j-1>=0 && grid[i][j-1]==1)
+            {
+                q.push({i,j-1,t+1});
+                grid[i][j-1]=2;
+            }
+            if(i+1<grid.size() && grid[i+1][j]==1)
+            {
+                q.push({i+1,j,t+1});
+                grid[i+1][j]=2;
+            }
+            if(j+1<grid[0].size() && grid[i][j+1]==1)
+            {
+                q.push({i,j+1,t+1});
+                grid[i][j+1]=2;
+            }
+        }
+        for(int i=0;i<grid.size();i++){
+            for(int j=0;j<grid[0].size();j++){
+                if(grid[i][j]==1)
+                return -1;
+            }
+        }
+        return time;
+    }
+};
+```
