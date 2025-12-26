@@ -390,3 +390,112 @@ public:
     }
 };
 ```
+
+## 9 Pacific Atlantic Water Flow
+
+There is an m x n rectangular island that borders both the Pacific Ocean and Atlantic Ocean. The Pacific Ocean touches the island's left and top edges, and the Atlantic Ocean touches the island's right and bottom edges.
+
+The island is partitioned into a grid of square cells. You are given an m x n integer matrix heights where heights[r][c] represents the height above sea level of the cell at coordinate (r, c).
+
+The island receives a lot of rain, and the rain water can flow to neighboring cells directly north, south, east, and west if the neighboring cell's height is less than or equal to the current cell's height. Water can flow from any cell adjacent to an ocean into the ocean.
+
+Return a 2D list of grid coordinates result where result[i] = [ri, ci] denotes that rain water can flow from cell (ri, ci) to both the Pacific and Atlantic oceans.
+
+```cpp
+class Solution {
+public:
+    vector<vector<bool>> processpac(vector<vector<int>>& heights){
+        vector<vector<bool>>vis(heights.size(),vector<bool>(heights[0].size(),0));
+        queue<vector<int>>q;
+        q.push({0,0,heights[0][0]});
+        vis[0][0]=1;
+        for(int i=1;i<heights.size();i++)
+        {
+            q.push({i,0,heights[i][0]});
+            vis[i][0]=1;
+        }
+        for(int j=1;j<heights[0].size();j++)
+        {
+            q.push({0,j,heights[0][j]});
+            vis[0][j]=1;
+        }
+        while(!q.empty()){
+            int i=q.front()[0],j=q.front()[1],h=q.front()[2];
+            q.pop();
+            if(i-1>=0 && !vis[i-1][j] && heights[i-1][j]>=heights[i][j])
+            {
+                q.push({i-1,j,heights[i-1][j]});
+                vis[i-1][j]=1;
+            }
+            if(j-1>=0 && !vis[i][j-1] && heights[i][j-1]>=heights[i][j])
+            {
+                q.push({i,j-1,heights[i][j-1]});
+                vis[i][j-1]=1;
+            }
+            if(i+1<heights.size() && !vis[i+1][j] && heights[i+1][j]>=heights[i][j])
+            {
+                q.push({i+1,j,heights[i+1][j]});
+                vis[i+1][j]=1;
+            }
+            if(j+1<heights[0].size() && !vis[i][j+1] && heights[i][j+1]>=heights[i][j])
+            {
+                q.push({i,j+1,heights[i][j+1]});
+                vis[i][j+1]=1;
+            }
+        }
+        return vis;
+    }
+    vector<vector<bool>> processatl(vector<vector<int>>& heights){
+        vector<vector<bool>>vis(heights.size(),vector<bool>(heights[0].size(),0));
+        queue<vector<int>>q;
+        q.push({(int)heights.size()-1,(int)heights[0].size()-1,heights[heights.size()-1][heights[0].size()-1]});
+        vis[heights.size()-1][heights[0].size()-1]=1;
+        for(int i=0;i<heights.size()-1;i++)
+        {
+            q.push({i,(int)heights[0].size()-1,heights[i][heights[0].size()-1]});
+            vis[i][heights[0].size()-1]=1;
+        }
+        for(int j=0;j<heights[0].size()-1;j++)
+        {
+            q.push({(int)heights.size()-1,j,heights[heights.size()-1][j]});
+            vis[heights.size()-1][j]=1;
+        }
+        while(!q.empty()){
+            int i=q.front()[0],j=q.front()[1],h=q.front()[2];
+            q.pop();
+            if(i-1>=0 && !vis[i-1][j] && heights[i-1][j]>=heights[i][j])
+            {
+                q.push({i-1,j,heights[i-1][j]});
+                vis[i-1][j]=1;
+            }
+            if(j-1>=0 && !vis[i][j-1] && heights[i][j-1]>=heights[i][j])
+            {
+                q.push({i,j-1,heights[i][j-1]});
+                vis[i][j-1]=1;
+            }
+            if(i+1<heights.size() && !vis[i+1][j] && heights[i+1][j]>=heights[i][j])
+            {
+                q.push({i+1,j,heights[i+1][j]});
+                vis[i+1][j]=1;
+            }
+            if(j+1<heights[0].size() && !vis[i][j+1] && heights[i][j+1]>=heights[i][j])
+            {
+                q.push({i,j+1,heights[i][j+1]});
+                vis[i][j+1]=1;
+            }
+        }
+        return vis;
+    }
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        vector<vector<bool>>pac=processpac(heights),atl=processatl(heights);
+        vector<vector<int>>res;
+        for(int i=0;i<heights.size();i++){
+            for(int j=0;j<heights[0].size();j++){
+                if(pac[i][j] && atl[i][j])
+                res.push_back({i,j});
+            }
+        }
+        return res;
+    }
+};
+```
