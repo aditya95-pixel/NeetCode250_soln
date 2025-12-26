@@ -221,3 +221,57 @@ public:
     }
 };
 ```
+
+## 6 Clone Graph
+
+Given a reference of a node in a connected undirected graph.
+
+Return a deep copy (clone) of the graph.
+
+Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors.
+
+class Node {
+    public int val;
+    public List<Node> neighbors;
+}
+ 
+
+Test case format:
+
+For simplicity, each node's value is the same as the node's index (1-indexed). For example, the first node with val == 1, the second node with val == 2, and so on. The graph is represented in the test case using an adjacency list.
+
+An adjacency list is a collection of unordered lists used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.
+
+The given node will always be the first node with val = 1. You must return the copy of the given node as a reference to the cloned graph.
+
+```cpp
+class Solution {
+public:
+    Node* cloneGraph(Node* node) {
+        if(!node)
+        return NULL;
+        Node* newHead=new Node(node->val);
+        queue<Node*>q1,q2;
+        q1.push(node);
+        q2.push(newHead);
+        map<int,Node*>mp;
+        mp[node->val]=newHead;
+        while(!q1.empty()){
+            Node*n1=q1.front(),*n2=q2.front();
+            q1.pop();
+            q2.pop();
+            for(auto n:n1->neighbors){
+                if(!mp.count(n->val))
+                {
+                    mp[n->val]=new Node(n->val);
+                    q1.push(n);
+                    q2.push(mp[n->val]);
+                    n2->neighbors.push_back(mp[n->val]);
+                }else
+                n2->neighbors.push_back(mp[n->val]);
+            }
+        }
+        return newHead;
+    }
+};
+```
