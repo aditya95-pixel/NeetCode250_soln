@@ -786,7 +786,7 @@ class Solution {
 public:
     int countComponents(int n, vector<vector<int>>& edges) {
         vector<vector<int>>adj(n);
-        for(auto edge:edges)
+        for(auto &edge:edges)
         {
             adj[edge[0]].push_back(edge[1]);
             adj[edge[1]].push_back(edge[0]);
