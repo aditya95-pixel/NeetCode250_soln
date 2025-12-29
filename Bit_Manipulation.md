@@ -243,3 +243,40 @@ public:
     }
 };
 ```
+
+## 9 Bitwise AND of Numbers Range
+
+Given two integers left and right that represent the range [left, right], return the bitwise AND of all numbers in this range, inclusive.
+
+```cpp
+class Solution {
+public:
+    int rangeBitwiseAnd(int left, int right) {
+        int shifts=0;
+        while(left<right){
+            left>>=1;
+            right>>=1;
+            shifts++;
+        }
+        return left<<shifts;
+    }
+};
+```
+
+## 10 Minimum Array End
+
+You are given two integers n and x. You have to construct an array of positive integers nums of size n where for every 0 <= i < n - 1, nums[i + 1] is greater than nums[i], and the result of the bitwise AND operation between all elements of nums is x.
+
+Return the minimum possible value of nums[n - 1].
+
+```cpp
+class Solution {
+public:
+    long long minEnd(int n, int x) {
+        long long res=x;
+        while(n-->1)
+            res=(res+1)|x;
+        return res;
+    }
+};
+```
