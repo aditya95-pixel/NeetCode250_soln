@@ -772,3 +772,46 @@ public:
     }
 };
 ```
+
+## 16 Number of Connected Components in an Undirected Graph
+
+There is an undirected graph with n nodes. There is also an edges array, where edges[i] = [a, b] means that there is an edge between node a and node b in the graph.
+
+The nodes are numbered from 0 to n - 1.
+
+Return the total number of connected components in that graph.
+
+```cpp
+class Solution {
+public:
+    int countComponents(int n, vector<vector<int>>& edges) {
+        vector<vector<int>>adj(n);
+        for(auto edge:edges)
+        {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        int cnt=0;
+        vector<bool>vis(n,0);
+        for(int i=0;i<n;i++){
+            if(!vis[i]){
+                cnt++;
+                vis[i]=1;
+                queue<int>q;
+                q.push(i);
+                while(!q.empty()){
+                    int u=q.front();
+                    q.pop();
+                    for(auto &v:adj[u]){
+                        if(!vis[v]){
+                            vis[v]=1;
+                            q.push(v);
+                        }
+                    }
+                }
+            }
+        }
+        return cnt;
+    }
+};
+```
