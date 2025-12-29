@@ -143,3 +143,52 @@ public:
     }
 };
 ```
+
+## 6 Spiral Matrix
+
+Given an m x n matrix, return all elements of the matrix in spiral order.
+
+```cpp
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        int rowb=0,rowe=matrix.size()-1,colb=0,cole=matrix[0].size()-1,cnt=0;
+        vector<int>res;
+        while(cnt<matrix.size()*matrix[0].size()){
+            for(int i=colb;i<=cole;i++)
+            {
+                res.push_back(matrix[rowb][i]);
+                cnt++;
+            }
+            if(cnt==matrix.size()*matrix[0].size())
+            break;
+            rowb++;
+            for(int i=rowb;i<=rowe;i++)
+            {
+                res.push_back(matrix[i][cole]);
+                cnt++;
+            }
+            if(cnt==matrix.size()*matrix[0].size())
+            break;
+            cole--;
+            for(int i=cole;i>=colb;i--)
+            {
+                res.push_back(matrix[rowe][i]);
+                cnt++;
+            }
+            if(cnt==matrix.size()*matrix[0].size())
+            break;
+            rowe--;
+            for(int i=rowe;i>=rowb;i--)
+            {
+                res.push_back(matrix[i][colb]);
+                cnt++;
+            }
+            if(cnt==matrix.size()*matrix[0].size())
+            break;
+            colb++;
+        }
+        return res;
+    }
+};
+```
