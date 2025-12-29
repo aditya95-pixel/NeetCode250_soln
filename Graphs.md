@@ -865,11 +865,7 @@ public:
         for(auto &edge:edges){
             int u=edge[0],v=edge[1];
             if(!d.merge(u,v))
-            {
-                res.push_back(u);
-                res.push_back(v);
-                return res;
-            }
+                return edge;
         }
         return res;
     }
