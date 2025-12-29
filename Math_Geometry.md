@@ -371,3 +371,28 @@ public:
     }
 };
 ```
+
+## 11 Pow(x, n)
+
+Implement pow(x, n), which calculates x raised to the power n (i.e., xn).
+
+```cpp
+class Solution {
+public:
+    double Pow(double x,long long n){
+        if(n<0)
+        return 1.0/Pow(x,-n);
+        if(n==0)
+        return 1;
+        else if(n==1)
+        return x;
+        else if(n%2==0)
+        return Pow(x*x,n/2);
+        else
+        return Pow(x*x,n/2)*x;
+    }
+    double myPow(double x, int n) {
+        return Pow(x,n);
+    }
+};
+```
