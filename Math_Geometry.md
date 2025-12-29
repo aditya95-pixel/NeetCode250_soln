@@ -396,3 +396,69 @@ public:
     }
 };
 ```
+
+## 12 Multiply Strings
+
+Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2, also represented as a string.
+
+Note: You must not use any built-in BigInteger library or convert the inputs to integer directly.
+
+```cpp
+class Solution {
+public:
+    string add(string num1,string num2){
+        reverse(num1.begin(),num1.end());
+        reverse(num2.begin(),num2.end());
+        string res;
+        int i=0,j=0,carry=0;
+        while(i<num1.size() && j<num2.size()){
+            int sum=(num1[i]-'0')+(num2[j]-'0')+carry;
+            res+=to_string(sum%10);
+            carry=sum/10;
+            i++;
+            j++;
+        }
+        while(i<num1.size()){
+            int sum=(num1[i]-'0')+carry;
+            res+=to_string(sum%10);
+            carry=sum/10;
+            i++;
+        }
+        while(j<num2.size()){
+            int sum=(num2[j]-'0')+carry;
+            res+=to_string(sum%10);
+            carry=sum/10;
+            j++;
+        }
+        if(carry)
+        res+=to_string(carry);
+        reverse(res.begin(),res.end());
+        return res;
+    }
+    string multiply(string num1, string num2) {
+        if(num1=="0" || num2=="0")
+        return "0";
+        string res;
+        int sum=0,c=0;
+        for(int i=num1.size()-1;i>=0;i--){
+            int dig1=num1[i]-'0',carry=0;
+            string tempsum;
+            for(int j=num2.size()-1;j>=0;j--){
+                int dig2=num2[j]-'0';
+                int s=dig1*dig2+carry;
+                tempsum+=to_string(s%10);
+                carry=s/10;
+            }
+            if(carry)
+            tempsum+=to_string(carry);
+            reverse(tempsum.begin(),tempsum.end());
+            tempsum+=string(c++,'0');
+            if(res.empty())
+            res=tempsum;
+            else
+            res=add(res,tempsum);
+        }
+        return res;
+    }
+};
+```
