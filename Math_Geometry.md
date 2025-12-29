@@ -73,3 +73,33 @@ public:
     }
 };
 ```
+
+## 3 Insert Greatest Common Divisors in Linked List
+
+Given the head of a linked list head, in which each node contains an integer value.
+
+Between every pair of adjacent nodes, insert a new node with a value equal to the greatest common divisor of them.
+
+Return the linked list after insertion.
+
+The greatest common divisor of two numbers is the largest positive integer that evenly divides both numbers.
+
+```cpp
+class Solution {
+public:
+    ListNode* insertGreatestCommonDivisors(ListNode* head) {
+        if(head->next==NULL)
+        return head;
+        ListNode*ptr=head->next,*preptr=head;
+        while(ptr){
+            int g=gcd(ptr->val,preptr->val);
+            ListNode* node=new ListNode(g);
+            preptr->next=node;
+            node->next=ptr;
+            preptr=ptr;
+            ptr=ptr->next;
+        }
+        return head;
+    }
+};
+```
