@@ -479,28 +479,26 @@ int count(int[] point) Counts the number of ways to form axis-aligned squares wi
 
 ```cpp
 class DetectSquares {
-    map<pair<int,int>,int>mp;
-    unordered_map<int,unordered_map<int,int>>ypts;
+    unordered_map<int,unordered_map<int,int>>mp;
 public:
     DetectSquares() {
         
     }
     
     void add(vector<int> point) {
-        mp[{point[0],point[1]}]++;
-        ypts[point[1]][point[0]]++;
+        mp[point[1]][point[0]]++;
     }
     
     int count(vector<int> point) {
         int ways=0;
-        if(!ypts.count(point[1]))
+        if(!mp.count(point[1]))
         return 0;
-        for(auto &[x,cnt]:ypts[point[1]]){
+        for(auto &[x,cnt]:mp[point[1]]){
             if(x==point[0])
             continue;
             int d=abs(x-point[0]);
-            ways+=cnt*mp[{point[0],point[1]+d}]*mp[{x,point[1]+d}];
-            ways+=cnt*mp[{point[0],point[1]-d}]*mp[{x,point[1]-d}];
+            ways+=cnt*mp[point[1]+d][point[0]]*mp[point[1]+d][x];
+            ways+=cnt*mp[point[1]-d][point[0]]*mp[point[1]-d][x];
         }
         return ways;
     }
