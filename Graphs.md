@@ -815,3 +815,63 @@ public:
     }
 };
 ```
+
+## 17 Redundant Connection
+
+In this problem, a tree is an undirected graph that is connected and has no cycles.
+
+You are given a graph that started as a tree with n nodes labeled from 1 to n, with one additional edge added. The added edge has two different vertices chosen from 1 to n, and was not an edge that already existed. The graph is represented as an array edges of length n where edges[i] = [ai, bi] indicates that there is an edge between nodes ai and bi in the graph.
+
+Return an edge that can be removed so that the resulting graph is a tree of n nodes. If there are multiple answers, return the answer that occurs last in the input.
+
+```cpp
+class DSU{
+    vector<int>parent,rank;
+    public:
+    DSU(int n){
+        parent.resize(n+1);
+        rank.resize(n+1,0);
+        iota(parent.begin(),parent.end(),0);
+    }
+    int find(int v){
+        if(parent[v]==v)
+        return v;
+        else
+        return parent[v]=find(parent[v]);
+    }
+    bool merge(int u,int v){
+        u=find(u);
+        v=find(v);
+        if(u==v)
+        return 0;
+        else if(rank[u]>rank[v]){
+            parent[v]=u;
+            return 1;
+        }else if(rank[v]>rank[u]){
+            parent[u]=v;
+            return 1;
+        }else{
+            rank[v]++;
+            parent[u]=v;
+            return 1;
+        }
+    }
+};
+class Solution {
+public:
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        DSU d(edges.size());
+        vector<int>res;
+        for(auto &edge:edges){
+            int u=edge[0],v=edge[1];
+            if(!d.merge(u,v))
+            {
+                res.push_back(u);
+                res.push_back(v);
+                return res;
+            }
+        }
+        return res;
+    }
+};
+```
