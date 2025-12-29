@@ -621,3 +621,42 @@ public:
     }
 };
 ```
+
+## 12 Course Schedule
+
+There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+
+For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+Return true if you can finish all courses. Otherwise, return false.
+
+```cpp
+class Solution {
+public:
+    bool canFinish(int V, vector<vector<int>>& edges) {
+        vector<int>indeg(V,0);
+        vector<vector<int>>adj(V);
+        for(auto &edge:edges)
+        {
+            adj[edge[1]].push_back(edge[0]);
+            indeg[edge[0]]++;
+        }
+        queue<int>q;
+        for(int i=0;i<V;i++){
+            if(indeg[i]==0)
+            q.push(i);
+        }
+        vector<int>res;
+        while(!q.empty()){
+            int u=q.front();
+            q.pop();
+            res.push_back(u);
+            for(auto &v:adj[u]){
+                indeg[v]--;
+                if(indeg[v]==0)
+                q.push(v);
+            }
+        }
+        return res.size()==V;
+    }
+};
+```
