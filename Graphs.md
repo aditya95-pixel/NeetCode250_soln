@@ -699,3 +699,41 @@ public:
     }
 };
 ```
+
+## 14 Graph Valid Tree
+
+Given n nodes labeled from 0 to n - 1 and a list of undirected edges (each edge is a pair of nodes), write a function to check whether these edges make up a valid tree.
+
+```cpp
+class Solution {
+public:
+    
+    bool validTree(int n, vector<vector<int>>& edges) {
+        vector<vector<int>>adj(n);
+        for(auto &edge:edges){
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        vector<int>res;
+        queue<pair<int,int>>q;
+        vector<bool>vis(n,0);
+        q.push({0,-1});
+        vis[0]=1;
+        while(!q.empty()){
+            int u=q.front().first,p=q.front().second;
+            q.pop();
+            res.push_back(u);
+            for(auto &v:adj[u]){
+                if(v==p)
+                continue;
+                else if(!vis[v]){
+                    vis[v]=1;
+                    q.push({v,u});
+                }else
+                return 0;
+            }
+        }
+        return res.size()==n?1:0;
+    }
+};
+```
