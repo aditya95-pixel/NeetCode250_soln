@@ -266,3 +266,31 @@ public:
     }
 };
 ```
+
+## 9 Plus One
+
+You are given a large integer represented as an integer array digits, where each digits[i] is the ith digit of the integer. The digits are ordered from most significant to least significant in left-to-right order. The large integer does not contain any leading 0's.
+
+Increment the large integer by one and return the resulting array of digits.
+
+```cpp
+class Solution {
+public:
+    vector<int> plusOne(vector<int>& digits) {
+        reverse(digits.begin(),digits.end());
+        vector<int>res;
+        int sum=digits[0]+1;
+        res.push_back(sum%10);
+        int carry=sum/10;
+        for(int i=1;i<digits.size();i++){
+            sum=digits[i]+carry;
+            res.push_back(sum%10);
+            carry=sum/10;
+        }
+        if(carry)
+        res.push_back(carry);
+        reverse(res.begin(),res.end());
+        return res;
+    }
+};
+```
