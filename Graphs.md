@@ -674,7 +674,7 @@ public:
     vector<int> findOrder(int V, vector<vector<int>>& edges) {
         vector<int>indeg(V,0);
         vector<vector<int>>adj(V);
-        for(auto edge:edges)
+        for(auto &edge:edges)
         {
             adj[edge[1]].push_back(edge[0]);
             indeg[edge[0]]++;
@@ -689,7 +689,7 @@ public:
             int u=q.front();
             q.pop();
             res.push_back(u);
-            for(auto v:adj[u]){
+            for(auto &v:adj[u]){
                 indeg[v]--;
                 if(indeg[v]==0)
                 q.push(v);
