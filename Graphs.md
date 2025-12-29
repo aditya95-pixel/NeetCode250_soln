@@ -939,3 +939,69 @@ public:
     }
 };
 ```
+
+## 19 Evaluate Division
+
+You are given an array of variable pairs equations and an array of real numbers values, where equations[i] = [Ai, Bi] and values[i] represent the equation Ai / Bi = values[i]. Each Ai or Bi is a string that represents a single variable.
+
+You are also given some queries, where queries[j] = [Cj, Dj] represents the jth query where you must find the answer for Cj / Dj = ?.
+
+Return the answers to all queries. If a single answer cannot be determined, return -1.0.
+
+Note: The input is always valid. You may assume that evaluating the queries will not result in division by zero and that there is no contradiction.
+
+Note: The variables that do not occur in the list of equations are undefined, so the answer cannot be determined for them.
+
+```cpp
+class Solution {
+public:
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        vector<double>res;
+        unordered_map<string,unordered_map<string,double>>adj;
+        for(int i=0;i<equations.size();i++){
+            string t1=equations[i][0],t2=equations[i][1];
+            double val=values[i];
+            adj[t1][t2]=val;
+            adj[t2][t1]=(double)1/val;
+        }
+        for(auto &q:queries){
+            string t1=q[0],t2=q[1];
+            if(!adj.count(t1) || !adj.count(t2))
+            {
+                res.push_back(-1);
+                continue;
+            }else{
+                queue<pair<string,double>>q;
+                q.push({t1,1});
+                set<string>s;
+                s.insert(t1);
+                bool chk=0;
+                while(!q.empty()){
+                    string u=q.front().first;
+                    double val=q.front().second;
+                    q.pop();
+                    for(auto &[v,num]:adj[u]){
+                        if(v==t2){
+                            val*=num;
+                            res.push_back(val);
+                            chk=1;
+                            break;
+                        }else if(s.count(v))
+                        continue;
+                        else
+                        {
+                            s.insert(v);
+                            q.push({v,val*num});
+                        }
+                    }
+                    if(chk==1)
+                    break;
+                }
+                if(chk==0)
+                res.push_back(-1);
+            }
+        }
+        return res;
+    }
+};
+```
