@@ -499,3 +499,62 @@ public:
     }
 };
 ```
+
+## 10 Surrounded Regions
+
+You are given an m x n matrix board containing letters 'X' and 'O', capture regions that are surrounded:
+
+Connect: A cell is connected to adjacent cells horizontally or vertically.
+Region: To form a region connect every 'O' cell.
+Surround: The region is surrounded with 'X' cells if you can connect the region with 'X' cells and none of the region cells are on the edge of the board.
+To capture a surrounded region, replace all 'O's with 'X's in-place within the original board. You do not need to return anything.
+
+```cpp
+class Solution {
+public:
+    void solve(vector<vector<char>>& grid) {
+        for(int i=0;i<grid.size();i++){
+            for(int j=0;j<grid[0].size();j++){
+                if(grid[i][j]=='O' && (i==0 || j==0 || i==grid.size()-1 || j==grid[0].size()-1))
+                {
+                    grid[i][j]='.';
+                    queue<pair<int,int>>q;
+                    q.push({i,j});
+                    while(!q.empty()){
+                        int i1=q.front().first,j1=q.front().second;
+                        q.pop();
+                        if(i1-1>=0 && grid[i1-1][j1]=='O')
+                        {
+                            grid[i1-1][j1]='.';
+                            q.push({i1-1,j1});
+                        }
+                        if(j1-1>=0 && grid[i1][j1-1]=='O')
+                        {
+                            grid[i1][j1-1]='.';
+                            q.push({i1,j1-1});
+                        }
+                        if(i1+1<grid.size() && grid[i1+1][j1]=='O')
+                        {
+                            grid[i1+1][j1]='.';
+                            q.push({i1+1,j1});
+                        }
+                        if(j1+1<grid[0].size() && grid[i1][j1+1]=='O')
+                        {
+                            grid[i1][j1+1]='.';
+                            q.push({i1,j1+1});
+                        }
+                    }
+                }
+            }
+        }
+        for(int i=0;i<grid.size();i++){
+            for(int j=0;j<grid[0].size();j++){
+                if(grid[i][j]=='O')
+                grid[i][j]='X';
+                else if(grid[i][j]=='.')
+                grid[i][j]='O';
+            }
+        }
+    }
+};
+```
