@@ -104,3 +104,93 @@ public:
     }
 };
 ```
+
+## 5 Meeting Rooms II
+
+Given an array of meeting time interval objects consisting of start and end times [[start_1,end_1],[start_2,end_2],...] (start_i < end_i), find the minimum number of days required to schedule all meetings without any conflicts.
+
+Note: (0,8),(8,10) is not considered a conflict at 8.
+
+```cpp
+class Solution {
+public:
+    int minMeetingRooms(vector<Interval>& intervals) {
+        vector<int>starts,ends;
+        for(auto &item:intervals){
+            starts.push_back(item.start);
+            ends.push_back(item.end);
+        }
+        sort(starts.begin(),starts.end());
+        sort(ends.begin(),ends.end());
+        int i=0,j=0,cnt=0,res=0;
+        while(i<starts.size() && j<ends.size()){
+            if(starts[i]<ends[j]){
+                i++;
+                cnt++;
+            }else{
+                j++;
+                cnt--;
+            }
+            res=max(res,cnt);
+        }
+        return res;
+    }
+};
+```
+
+## 6 Meeting Rooms III
+
+You are given an integer n. There are n rooms numbered from 0 to n - 1.
+
+You are given a 2D integer array meetings where meetings[i] = [starti, endi] means that a meeting will be held during the half-closed time interval [starti, endi). All the values of starti are unique.
+
+Meetings are allocated to rooms in the following manner:
+
+Each meeting will take place in the unused room with the lowest number.
+If there are no available rooms, the meeting will be delayed until a room becomes free. The delayed meeting should have the same duration as the original meeting.
+When a room becomes unused, meetings that have an earlier original start time should be given the room.
+Return the number of the room that held the most meetings. If there are multiple rooms, return the room with the lowest number.
+
+A half-closed interval [a, b) is the interval between a and b including a and not including b.
+
+```cpp
+class Solution {
+public:
+    int mostBooked(int n, vector<vector<int>>& meetings) {
+        sort(meetings.begin(),meetings.end());
+        priority_queue<int,vector<int>,greater<>>avail;
+        priority_queue<pair<long long,int>,vector<pair<long long,int>>,greater<>>occ;
+        vector<int>freq(n,0);
+        for(int i=0;i<n;i++)
+        avail.push(i);
+        long long time=0;
+        for(int i=0;i<meetings.size();i++){
+            time=max(time,1LL*meetings[i][0]);
+            while(!occ.empty() && time>=occ.top().first)
+            {
+                int room=occ.top().second;
+                occ.pop();
+                avail.push(room);
+            }
+            if(!avail.empty()){
+                int room=avail.top();
+                avail.pop();
+                occ.push({time+meetings[i][1]-meetings[i][0],room});
+                freq[room]++;
+            }else{
+                time=occ.top().first;
+                int room=occ.top().second;
+                occ.pop();
+                occ.push({time+meetings[i][1]-meetings[i][0],room});
+                freq[room]++;
+            }
+        }
+        int maxo=*max_element(freq.begin(),freq.end());
+        for(int i=0;i<n;i++){
+            if(freq[i]==maxo)
+            return i;
+        }
+        return -1;
+    }
+};
+```
