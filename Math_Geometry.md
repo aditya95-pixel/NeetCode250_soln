@@ -486,21 +486,21 @@ public:
     }
     
     void add(vector<int> point) {
-        mp[point[1]][point[0]]++;
+        mp[point[0]][point[1]]++;
     }
     
     int count(vector<int> point) {
-        int ways=0;
-        if(!mp.count(point[1]))
+        if(!mp.count(point[0]))
         return 0;
-        for(auto &[x,cnt]:mp[point[1]]){
-            if(x==point[0])
+        int res=0;
+        for(auto &[y,cnt]:mp[point[0]]){
+            if(y==point[1])
             continue;
-            int d=abs(x-point[0]);
-            ways+=cnt*mp[point[1]+d][point[0]]*mp[point[1]+d][x];
-            ways+=cnt*mp[point[1]-d][point[0]]*mp[point[1]-d][x];
+            int d=abs(y-point[1]);
+            res+=cnt*mp[point[0]+d][y]*mp[point[0]+d][point[1]];
+            res+=cnt*mp[point[0]-d][y]*mp[point[0]-d][point[1]];
         }
-        return ways;
+        return res;
     }
 };
 ```
