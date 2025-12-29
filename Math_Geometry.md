@@ -294,3 +294,80 @@ public:
     }
 };
 ```
+
+## 10 Roman to Integer
+
+Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.
+
+Symbol       Value
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000
+For example, 2 is written as II in Roman numeral, just two ones added together. 12 is written as XII, which is simply X + II. The number 27 is written as XXVII, which is XX + V + II.
+
+Roman numerals are usually written largest to smallest from left to right. However, the numeral for four is not IIII. Instead, the number four is written as IV. Because the one is before the five we subtract it making four. The same principle applies to the number nine, which is written as IX. There are six instances where subtraction is used:
+
+I can be placed before V (5) and X (10) to make 4 and 9. 
+X can be placed before L (50) and C (100) to make 40 and 90. 
+C can be placed before D (500) and M (1000) to make 400 and 900.
+Given a roman numeral, convert it to an integer.
+
+```cpp
+class Solution {
+public:
+    int romanToInt(string s) {
+        set<char>seto;
+        int res=0;
+        for(auto &c:s){
+            if(c=='I')
+            {
+                res++;
+                seto.insert(c);
+            }else if(c=='V' && seto.count('I'))
+                res+=3;
+            else if(c=='V')
+                res+=5;
+            else if(c=='X' && seto.count('I'))
+            {
+                res+=8;
+                seto.insert(c);
+            }
+            else if(c=='X')
+            {
+                res+=10;
+                seto.insert(c);
+            }
+            else if(c=='L' && seto.count('X'))
+                res+=30;
+            else if(c=='L')
+                res+=50;
+            else if(c=='C' && seto.count('X'))
+            {
+                res+=80;
+                seto.insert(c);
+            }
+            else if(c=='C')
+            {
+                res+=100;
+                seto.insert(c);
+            }
+            else if(c=='D' && seto.count('C'))
+                res+=300;
+            else if(c=='D')
+                res+=500;
+            else if(c=='M' && seto.count('C'))
+            {
+                res+=800;
+                seto.insert(c);
+            }
+            else if(c=='M')
+                res+=1000;
+        }
+        return res;
+    }
+};
+```
