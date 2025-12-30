@@ -122,3 +122,41 @@ public:
     }
 };
 ```
+
+## 6 Longest Palindromic Substring
+
+Given a string s, return the longest palindromic substring in s.
+
+```cpp
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        vector<vector<int>>dp(s.size(),vector<int>(s.size(),0));
+        int maxlen=1,idx=0;
+        for(int i=0;i<s.size();i++)
+        dp[i][i]=1;
+        for(int i=0;i<s.size()-1;i++){
+            if(s[i]==s[i+1])
+            {
+                dp[i][i+1]=1;
+                maxlen=2;
+                idx=i;
+            }
+        }
+        for(int len=3;len<=s.size();len++){
+            for(int i=0;i<s.size()-len+1;i++){
+                int j=i+len-1;
+                if(s[i]==s[j] && dp[i+1][j-1])
+                {
+                    dp[i][j]=1;
+                    if(maxlen<len){
+                        maxlen=len;
+                        idx=i;
+                    }
+                }
+            }
+        }
+        return s.substr(idx,maxlen);
+    }
+};
+```
