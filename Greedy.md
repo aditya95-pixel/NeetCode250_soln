@@ -230,3 +230,68 @@ public:
     }
 };
 ```
+
+## 8 Gas Station
+
+There are n gas stations along a circular route, where the amount of gas at the ith station is gas[i].
+
+You have a car with an unlimited gas tank and it costs cost[i] of gas to travel from the ith station to its next (i + 1)th station. You begin the journey with an empty tank at one of the gas stations.
+
+Given two integer arrays gas and cost, return the starting gas station's index if you can travel around the circuit once in the clockwise direction, otherwise return -1. If there exists a solution, it is guaranteed to be unique.
+
+```cpp
+class Solution {
+public:
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+        int curr=0,start=0;
+        for(int i=0;i<gas.size();i++){
+            curr+=gas[i]-cost[i];
+            if(curr<0){
+                start=i+1;
+                curr=0;
+            }
+        }
+        curr=0;
+        for(int i=0;i<gas.size();i++){
+            int idx=(start+i)%gas.size();
+            curr+=gas[idx]-cost[idx];
+            if(curr<0)
+                return -1;
+        }
+        return start;
+    }
+};
+```
+
+## 9 Hand of Straights
+
+Alice has some number of cards and she wants to rearrange the cards into groups so that each group is of size groupSize, and consists of groupSize consecutive cards.
+
+Given an integer array hand where hand[i] is the value written on the ith card and an integer groupSize, return true if she can rearrange the cards, or false otherwise.
+
+```cpp
+class Solution {
+public:
+    bool isNStraightHand(vector<int>& hand, int groupSize) {
+        map<int,int>mp;
+        for(int i=0;i<hand.size();i++)
+            mp[hand[i]]++;
+        while(!mp.empty()){
+            auto it=mp.begin();
+            int val=it->first,cnt=it->second;
+            for(int i=0;i<groupSize;i++){
+                if(mp[val]>=cnt)
+                {
+                    mp[val]-=cnt;
+                    if(mp[val]==0)
+                    mp.erase(val);
+                    val++;
+                }
+                else
+                return 0;
+            }
+        }
+        return 1;
+    }
+};
+```
