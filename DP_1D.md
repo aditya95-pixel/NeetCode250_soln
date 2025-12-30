@@ -88,3 +88,37 @@ public:
     }
 };
 ```
+
+## 5 House Robber II
+
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+
+```cpp
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        if(nums.size()==1)
+        return nums[0];
+
+        vector<int>dp1(nums.size(),0);
+        dp1[0]=0;
+        if(nums.size()>=2)
+        dp1[1]=nums[1];
+        for(int i=2;i<nums.size();i++)
+        dp1[i]=max(dp1[i-1],dp1[i-2]+nums[i]);
+        int max1=dp1[nums.size()-1];
+        
+        nums.pop_back();
+        vector<int>dp2(nums.size(),0);
+        dp2[0]=nums[0];
+        if(nums.size()>=2)
+        dp2[1]=max(dp2[0],nums[1]);
+        for(int i=2;i<nums.size();i++)
+        dp2[i]=max(dp2[i-1],dp2[i-2]+nums[i]);
+        int max2=dp2[nums.size()-1];
+        return max(max1,max2);
+    }
+};
+```
