@@ -131,7 +131,7 @@ Given a string s, return the longest palindromic substring in s.
 class Solution {
 public:
     string longestPalindrome(string s) {
-        vector<vector<int>>dp(s.size(),vector<int>(s.size(),0));
+        vector<vector<bool>>dp(s.size(),vector<bool>(s.size(),0));
         int maxlen=1,idx=0;
         for(int i=0;i<s.size();i++)
         dp[i][i]=1;
