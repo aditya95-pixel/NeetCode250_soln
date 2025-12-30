@@ -160,3 +160,45 @@ public:
     }
 };
 ```
+
+## 7 Palindromic Substrings
+
+Given a string s, return the number of palindromic substrings in it.
+
+A string is a palindrome when it reads the same backward as forward.
+
+A substring is a contiguous sequence of characters within the string.
+
+```cpp
+class Solution {
+public:
+    int countSubstrings(string s) {
+        int cnt=0;
+        vector<vector<bool>>dp(s.size(),vector<bool>(s.size(),0));
+        for(int i=0;i<s.size();i++)
+        {
+            dp[i][i]=1;
+            cnt++;
+        }
+        for(int i=0;i<s.size()-1;i++)
+        {
+            if(s[i]==s[i+1])
+            {
+                dp[i][i+1]=1;
+                cnt++;
+            }
+        }
+        for(int len=3;len<=s.size();len++){
+            for(int i=0;i<s.size()-len+1;i++){
+                int j=i+len-1;
+                if(s[i]==s[j] && dp[i+1][j-1])
+                {
+                    dp[i][j]=1;
+                    cnt++;
+                }
+            }
+        }
+        return cnt;
+    }
+};
+```
