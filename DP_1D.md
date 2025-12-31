@@ -307,3 +307,31 @@ public:
     }
 };
 ```
+
+## 11 Word Break
+
+Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+```cpp
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        set<string>seto(wordDict.begin(),wordDict.end());
+        vector<bool>dp(s.size()+1,0);
+        dp[0]=1;
+        for(int i=0;i<s.size();i++){
+            string sub;
+            if(!dp[i])
+            continue;
+            for(int j=i;j<s.size();j++){
+                sub+=s[j];
+                if(seto.count(sub) && dp[i])
+                dp[j+1]=1;
+            }
+        }
+        return dp.back();
+    }
+};
+```
