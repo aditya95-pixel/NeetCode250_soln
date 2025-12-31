@@ -412,3 +412,31 @@ public:
     }
 };
 ```
+
+## 15 Perfect Squares
+
+Given an integer n, return the least number of perfect square numbers that sum to n.
+
+A perfect square is an integer that is the square of an integer; in other words, it is the product of some integer with itself. For example, 1, 4, 9, and 16 are perfect squares while 3 and 11 are not.
+
+```cpp
+class Solution {
+public:
+    int numSquares(int n) {
+        vector<int>sqs;
+        for(int i=1;i<=sqrt(n);i++)
+        sqs.push_back(i*i);
+        vector<int>dp(n+1,INT_MAX);
+        dp[0]=0;
+        for(int num=1;num<=n;num++){
+            for(int i=0;i<sqs.size();i++){
+                if(num-sqs[i]>=0 && dp[num-sqs[i]]!=INT_MAX)
+                dp[num]=min(dp[num],1+dp[num-sqs[i]]);
+                else if(num-sqs[i]<0)
+                break;
+            }
+        }
+        return dp[n];
+    }
+};
+```
