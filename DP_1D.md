@@ -358,3 +358,31 @@ public:
     }
 };
 ```
+
+## 13 Partition Equal Subset Sum
+
+Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal or false otherwise.
+
+```cpp
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum=accumulate(nums.begin(),nums.end(),0);
+        if(sum%2!=0)
+        return 0;
+        int target=sum/2;
+        vector<vector<bool>>dp(nums.size()+1,vector<bool>(target+1,0));
+        dp[0][0]=1;
+        for(int i=1;i<=nums.size();i++){
+            for(int j=0;j<=target;j++){
+                dp[i][j]=dp[i-1][j];
+                if(dp[i][j])
+                continue;
+                if(j-nums[i-1]>=0 && dp[i-1][j-nums[i-1]])
+                dp[i][j]=1;
+            }
+        }
+        return dp[nums.size()][target];
+    }
+};
+```
