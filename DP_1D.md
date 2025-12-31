@@ -280,3 +280,30 @@ public:
     }
 };
 ```
+
+## 10 Maximum Product Subarray
+
+Given an integer array nums, find a subarray that has the largest product, and return the product.
+
+The test cases are generated so that the answer will fit in a 32-bit integer.
+
+Note that the product of an array with a single element is the value of that element.
+
+```cpp
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int maxprod=INT_MIN,leftRight=1,rightLeft=1;
+        for(int i=0;i<nums.size();i++){
+            if(leftRight==0)
+            leftRight=1;
+            if(rightLeft==0)
+            rightLeft=1;
+            leftRight*=nums[i];
+            rightLeft*=nums[nums.size()-i-1];
+            maxprod=max({maxprod,leftRight,rightLeft});
+        }
+        return maxprod;
+    }
+};
+```
