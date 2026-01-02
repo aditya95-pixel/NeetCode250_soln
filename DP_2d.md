@@ -370,3 +370,28 @@ public:
     }
 };
 ```
+
+## 13 Distinct Subsequences
+
+Given two strings s and t, return the number of distinct subsequences of s which equals t.
+
+The test cases are generated so that the answer fits on a 32-bit signed integer.
+
+```cpp
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        vector<vector<uint>>dp(s.size()+1,vector<uint>(t.size()+1,0));
+        for(int i=0;i<=s.size();i++)
+        dp[i][t.size()]=1;
+        for(int i=s.size()-1;i>=0;i--){
+            for(int j=t.size()-1;j>=0;j--){
+                dp[i][j]=dp[i+1][j];
+                if(s[i]==t[j])
+                dp[i][j]+=dp[i+1][j+1];
+            }
+        }
+        return dp[0][0];
+    }
+};
+```
