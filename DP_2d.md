@@ -266,3 +266,35 @@ public:
     }
 };
 ```
+
+## 10 Stone Game
+
+Alice and Bob play a game with piles of stones. There are an even number of piles arranged in a row, and each pile has a positive integer number of stones piles[i].
+
+The objective of the game is to end with the most stones. The total number of stones across all the piles is odd, so there are no ties.
+
+Alice and Bob take turns, with Alice starting first. Each turn, a player takes the entire pile of stones either from the beginning or from the end of the row. This continues until there are no more piles left, at which point the person with the most stones wins.
+
+Assuming Alice and Bob play optimally, return true if Alice wins the game, or false if Bob wins.
+
+```cpp
+class Solution {
+public:
+    int solve(vector<int>& piles,int l,int r,vector<vector<int>>&dp,int sum){
+        if(l+1>r)
+        return 0;
+        if(l+1==r)
+        return max(piles[l],piles[r]);
+        if(dp[l][r]!=-1)
+        return dp[l][r];
+        int score1=solve(piles,l+1,r,dp,sum-piles[l]);
+        int score2=solve(piles,l,r-1,dp,sum-piles[r]);
+        return dp[l][r]=sum-min(score1,score2);
+    }
+    bool stoneGame(vector<int>& piles) {
+        vector<vector<int>>dp(piles.size(),vector<int>(piles.size(),-1));
+        int sum=accumulate(piles.begin(),piles.end(),0);
+        return (solve(piles,0,piles.size()-1,dp,sum)>(double)sum/2);
+    }
+};
+```
