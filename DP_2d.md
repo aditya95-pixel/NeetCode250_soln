@@ -382,7 +382,7 @@ class Solution {
 public:
     int numDistinct(string s, string t) {
         vector<vector<uint>>dp(s.size()+1,vector<uint>(t.size()+1,0));
-        for(int i=0;i<=s.size();i++)
+        for(int i=t.size();i<=s.size();i++)
         dp[i][t.size()]=1;
         for(int i=s.size()-1;i>=0;i--){
             for(int j=t.size()-1;j>=0;j--){
