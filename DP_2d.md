@@ -406,6 +406,14 @@ Insert a character
 Delete a character
 Replace a character
 
+working 
+
+Replace,dp[i-1][j-1],Move diagonally; fix both strings' current char.
+
+Delete,dp[i-1][j],Move down; remove a char from word1.
+
+Insert,dp[i][j-1],Move right; add a char to word1 to match word2.
+
 ```cpp
 class Solution {
 public:
