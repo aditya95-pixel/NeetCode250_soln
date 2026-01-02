@@ -190,3 +190,31 @@ public:
     }
 };
 ```
+
+## 8 Target Sum
+
+You are given an integer array nums and an integer target.
+
+You want to build an expression out of nums by adding one of the symbols '+' and '-' before each integer in nums and then concatenate all the integers.
+
+For example, if nums = [2, 1], you can add a '+' before 2 and a '-' before 1 and concatenate them to build the expression "+2-1".
+Return the number of different expressions that you can build, which evaluates to target.
+
+ ```cpp
+class Solution {
+public:
+    int findTargetSumWays(vector<int>& nums, int target) {
+        unordered_map<int,unordered_map<int,int>>dp;
+        dp[0][nums[0]]++;
+        dp[0][-nums[0]]++;
+        for(int i=1;i<nums.size();i++){
+            for(auto &item:dp[i-1]){
+                int val=item.first,cnt=item.second;
+                dp[i][val+nums[i]]+=cnt;
+                dp[i][val-nums[i]]+=cnt;
+            }
+        }
+        return dp[nums.size()-1][target];
+    }
+};
+```
