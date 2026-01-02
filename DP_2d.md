@@ -218,3 +218,51 @@ public:
     }
 };
 ```
+
+## 9 Interleaving String
+
+Given strings s1, s2, and s3, find whether s3 is formed by an interleaving of s1 and s2.
+
+An interleaving of two strings s and t is a configuration where s and t are divided into n and m substrings respectively, such that:
+
+s = s1 + s2 + ... + sn
+t = t1 + t2 + ... + tm
+|n - m| <= 1
+The interleaving is s1 + t1 + s2 + t2 + s3 + t3 + ... or t1 + s1 + t2 + s2 + t3 + s3 + ...
+Note: a + b is the concatenation of strings a and b.
+
+```cpp
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        if(s1.size()+s2.size()!=s3.size())
+        return 0;
+        vector<vector<int>>dp(s1.size()+1,vector<int>(s2.size()+1,0));
+        dp[0][0]=1;
+        for(int i=1;i<=s1.size();i++)
+        {
+            if(!dp[i-1][0])
+            break;
+            else if(s3[i-1]==s1[i-1])
+            dp[i][0]=dp[i-1][0];
+        }
+        for(int j=1;j<=s2.size();j++)
+        {
+            if(!dp[0][j-1])
+            break;
+            else if(s3[j-1]==s2[j-1])
+            dp[0][j]=dp[0][j-1];
+        }
+        for(int i=1;i<=s1.size();i++){
+            for(int j=1;j<=s2.size();j++){
+                int k=i+j;
+                if(dp[i-1][j] && s3[k-1]==s1[i-1])
+                dp[i][j]=dp[i-1][j];
+                if(dp[i][j-1] && s3[k-1]==s2[j-1])
+                dp[i][j]=dp[i][j-1];
+            }
+        }
+        return dp[s1.size()][s2.size()];
+    }
+};
+```
