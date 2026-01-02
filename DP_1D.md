@@ -460,3 +460,47 @@ public:
     }
 };
 ```
+
+## 17 Stone Game III
+
+Alice and Bob continue their games with piles of stones. There are several stones arranged in a row, and each stone has an associated value which is an integer given in the array stoneValue.
+
+Alice and Bob take turns, with Alice starting first. On each player's turn, that player can take 1, 2, or 3 stones from the first remaining stones in the row.
+
+The score of each player is the sum of the values of the stones taken. The score of each player is 0 initially.
+
+The objective of the game is to end with the highest score, and the winner is the player with the highest score and there could be a tie. The game continues until all the stones have been taken.
+
+Assume Alice and Bob play optimally.
+
+Return "Alice" if Alice will win, "Bob" if Bob will win, or "Tie" if they will end the game with the same score.
+
+```cpp
+class Solution {
+    vector<int>dp;
+public:
+    int solve(vector<int>& stoneValue,int idx,int sum){
+        if(idx==stoneValue.size())
+        return 0;
+        else if(dp[idx]!=-1)
+        return dp[idx];
+        int tempsum=sum,mino=INT_MAX;
+        for(int i=idx;i<min(idx+3,(int)stoneValue.size());i++)
+        {
+            tempsum-=stoneValue[i];
+            mino=min(mino,solve(stoneValue,i+1,tempsum));
+        }
+        return dp[idx]=sum-mino;
+    }
+    string stoneGameIII(vector<int>& stoneValue) {
+        dp.resize(stoneValue.size(),-1);
+        int sum=accumulate(stoneValue.begin(),stoneValue.end(),0);
+        if(solve(stoneValue,0,sum)>(double)sum/2)
+        return "Alice";
+        else if(solve(stoneValue,0,sum)==(double)sum/2)
+        return "Tie";
+        else
+        return "Bob";
+    }
+};
+```
