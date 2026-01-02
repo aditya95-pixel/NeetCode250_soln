@@ -334,3 +334,39 @@ public:
     }
 };
 ```
+
+## 12 Longest Increasing Path in a Matrix
+
+Given an m x n integers matrix, return the length of the longest increasing path in matrix.
+
+From each cell, you can either move in four directions: left, right, up, or down. You may not move diagonally or move outside the boundary (i.e., wrap-around is not allowed).
+
+```cpp
+class Solution {
+    vector<vector<int>>dp;
+public:
+    int solve(int i,int j,vector<vector<int>>& matrix){
+        if(dp[i][j]!=-1)
+        return dp[i][j];
+        int maxlen=1;
+        if(i-1>=0 && matrix[i-1][j]<matrix[i][j])
+        maxlen=max(maxlen,1+solve(i-1,j,matrix));
+        if(j-1>=0 && matrix[i][j-1]<matrix[i][j])
+        maxlen=max(maxlen,1+solve(i,j-1,matrix));
+        if(i+1<matrix.size() && matrix[i+1][j]<matrix[i][j])
+        maxlen=max(maxlen,1+solve(i+1,j,matrix));
+        if(j+1<matrix[0].size() && matrix[i][j+1]<matrix[i][j])
+        maxlen=max(maxlen,1+solve(i,j+1,matrix));
+        return dp[i][j]=maxlen;
+    }
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int maxlen=1;
+        dp.resize(matrix.size(),vector<int>(matrix[0].size(),-1));
+        for(int i=0;i<matrix.size();i++){
+            for(int j=0;j<matrix[0].size();j++)
+                maxlen=max(maxlen,solve(i,j,matrix));
+        }
+        return maxlen;
+    }
+};
+```
