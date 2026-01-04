@@ -242,3 +242,64 @@ public:
     }
 };
 ```
+
+## 6 Alien Dictionary
+
+There is a foreign language which uses the latin alphabet, but the order among letters is not "a", "b", "c" ... "z" as in English.
+
+You receive a list of non-empty strings words from the dictionary, where the words are sorted lexicographically based on the rules of this new language.
+
+Derive the order of letters in this language. If the order is invalid, return an empty string. If there are multiple valid order of letters, return any of them.
+
+A string a is lexicographically smaller than a string b if either of the following is true:
+
+The first letter where they differ is smaller in a than in b.
+a is a prefix of b and a.length < b.length.
+
+```cpp
+class Solution {
+public:
+    string foreignDictionary(vector<string>& words) {
+        vector<int>exist(26,0),indeg(26,0);
+        for(auto &word:words){
+            for(auto &c:word)
+            exist[c-'a']++;
+        }
+        vector<vector<int>>adj(26);
+        for(int i=0;i<words.size()-1;i++){
+            string&a=words[i],&b=words[i+1];
+            int idx=0;
+            while(idx<a.size() && idx<b.size() && a[idx]==b[idx])
+            idx++;
+            if(idx==b.size() && idx<a.size())
+            return "";
+            if(idx<a.size() && idx<b.size())
+            {
+                adj[a[idx]-'a'].push_back(b[idx]-'a');
+                indeg[b[idx]-'a']++;
+            }
+        }
+        queue<int>q;
+        for(int i=0;i<26;i++){
+            if(exist[i] && indeg[i]==0)
+            q.push(i);
+        }
+        string res;
+        while(!q.empty()){
+            int u=q.front();
+            q.pop();
+            res+=(char)(u+'a');
+            for(auto &v:adj[u]){
+                indeg[v]--;
+                if(indeg[v]==0)
+                q.push(v);
+            }
+        }
+        for(int i=0;i<26;i++){
+            if(exist[i] && indeg[i]>0)
+            return "";
+        }
+        return res;
+    }
+};
+```
