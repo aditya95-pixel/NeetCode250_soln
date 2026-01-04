@@ -89,7 +89,7 @@ public:
                 int v=item.first,d=item.second;
                 if(dist[v]>dist[u]+d){
                     dist[v]=dist[u]+d;
-                    pq.push({d,v});
+                    pq.push({dist[v],v});
                 }
             }
         }
