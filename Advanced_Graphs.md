@@ -195,3 +195,50 @@ public:
     }
 };
 ```
+
+## 5 Swim in Rising Water
+
+You are given an n x n integer matrix grid where each value grid[i][j] represents the elevation at that point (i, j).
+
+It starts raining, and water gradually rises over time. At time t, the water level is t, meaning any cell with elevation less than equal to t is submerged or reachable.
+
+You can swim from a square to another 4-directionally adjacent square if and only if the elevation of both squares individually are at most t. You can swim infinite distances in zero time. Of course, you must stay within the boundaries of the grid during your swim.
+
+Return the minimum time until you can reach the bottom right square (n - 1, n - 1) if you start at the top left square (0, 0).
+
+```cpp
+class Solution {
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        vector<vector<int>>dist(grid.size(),vector<int>(grid[0].size(),INT_MAX));
+        priority_queue<vector<int>,vector<vector<int>>,greater<>>pq;
+        pq.push({0,0,grid[0][0]});
+        dist[0][0]=grid[0][0];
+        while(!pq.empty()){
+            int i=pq.top()[0],j=pq.top()[1],d=pq.top()[2];
+            pq.pop();
+            if(i-1>=0 && dist[i-1][j]>max(d,grid[i-1][j]))
+            {
+                dist[i-1][j]=max(d,grid[i-1][j]);
+                pq.push({i-1,j,dist[i-1][j]});
+            }
+            if(j-1>=0 && dist[i][j-1]>max(d,grid[i][j-1]))
+            {
+                dist[i][j-1]=max(d,grid[i][j-1]);
+                pq.push({i,j-1,dist[i][j-1]});
+            }
+            if(i+1<grid.size() && dist[i+1][j]>max(d,grid[i+1][j]))
+            {
+                dist[i+1][j]=max(d,grid[i+1][j]);
+                pq.push({i+1,j,dist[i+1][j]});
+            }
+            if(j+1<grid[0].size() && dist[i][j+1]>max(d,grid[i][j+1]))
+            {
+                dist[i][j+1]=max(d,grid[i][j+1]);
+                pq.push({i,j+1,dist[i][j+1]});
+            }
+        }
+        return dist[grid.size()-1][grid[0].size()-1];
+    }
+};
+```
