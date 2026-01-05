@@ -303,3 +303,44 @@ public:
     }
 };
 ```
+
+## 7 Cheapest Flights Within K Stops
+
+There are n cities connected by some number of flights. You are given an array flights where flights[i] = [fromi, toi, pricei] indicates that there is a flight from city fromi to city toi with cost pricei.
+
+You are also given three integers src, dst, and k, return the cheapest price from src to dst with at most k stops. If there is no such route, return -1.
+
+```cpp
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        vector<vector<pair<int,int>>>adj(n);
+        for(auto &flight:flights){
+            int &u=flight[0],&v=flight[1],&d=flight[2];
+            adj[u].push_back({v,d});
+        }
+        queue<pair<int,int>>q;
+        q.push({src,0});
+        int stops=0;
+        vector<int>dist(n,INT_MAX);
+        dist[src]=0;
+        while(!q.empty() && stops<=k){
+            int sz=q.size();
+            while(sz--){
+                int u=q.front().first,cost=q.front().second;
+                q.pop();
+                for(auto &item:adj[u]){
+                    int &v=item.first,&d=item.second;
+                    if(dist[v]>cost+d)
+                    {
+                        dist[v]=cost+d;
+                        q.push({v,dist[v]});
+                    }
+                }
+            }
+            stops++;
+        }
+        return (dist[dst]==INT_MAX)?-1:dist[dst];
+    }
+};
+```
