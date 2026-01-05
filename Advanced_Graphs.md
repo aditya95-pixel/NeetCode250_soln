@@ -344,3 +344,111 @@ public:
     }
 };
 ```
+
+## 8 Find Critical and Pseudo-Critical Edges in Minimum Spanning Tree
+
+Given a weighted undirected connected graph with n vertices numbered from 0 to n - 1, and an array edges where edges[i] = [ai, bi, weighti] represents a bidirectional and weighted edge between nodes ai and bi. A minimum spanning tree (MST) is a subset of the graph's edges that connects all vertices without cycles and with the minimum possible total edge weight.
+
+Find all the critical and pseudo-critical edges in the given graph's minimum spanning tree (MST). An MST edge whose deletion from the graph would cause the MST weight to increase is called a critical edge. On the other hand, a pseudo-critical edge is that which can appear in some MSTs but not all.
+
+Note that you can return the indices of the edges in any order.
+
+```cpp
+class DSU{
+    vector<int>parent,rank;
+    public:
+    DSU(int n){
+        parent.resize(n);
+        rank.resize(n,0);
+        iota(parent.begin(),parent.end(),0);
+    }
+    int find(int u){
+        if(parent[u]==u)
+        return u;
+        else
+        return parent[u]=find(parent[u]);
+    }
+    void merge(int u,int v){
+        u=find(u);
+        v=find(v);
+        if(rank[v]>rank[u])
+        parent[u]=v;
+        else if(rank[v]<rank[u])
+        parent[v]=u;
+        else{
+            parent[v]=u;
+            rank[u]++;
+        }
+    }
+};
+class Solution {
+public: 
+    static bool cmp(vector<int>&a,vector<int>&b){
+        return a[2]<b[2];
+    }
+    vector<vector<int>> findCriticalAndPseudoCriticalEdges(int n, vector<vector<int>>& edges) {
+        vector<vector<int>>es;
+        vector<vector<int>>res(2);
+        for(int i=0;i<edges.size();i++){
+            vector<int>&e=edges[i];
+            es.push_back({e[0],e[1],e[2],i});
+        }
+        sort(es.begin(),es.end(),cmp);
+        int mstwt=0,cnt=0;
+        DSU d(n);
+        for(auto &e:es){
+            int u=e[0],v=e[1],wt=e[2];
+            if(d.find(u)!=d.find(v)){
+                d.merge(u,v);
+                mstwt+=wt;
+                cnt++;
+            }
+            if(cnt==n-1)
+            break;
+        }
+        for(int i=0;i<es.size();i++){
+            DSU d1(n);
+            int wt1=0;
+            cnt=0;
+            for(int j=0;j<es.size();j++){
+                if(i==j)
+                continue;
+                vector<int>&e=es[j];
+                int u=e[0],v=e[1],wt=e[2];
+                if(d1.find(u)!=d1.find(v)){
+                    d1.merge(u,v);
+                    wt1+=wt;
+                    cnt++;
+                }
+                if(cnt==n-1)
+                break;
+            }
+            if(mstwt!=wt1)
+            {
+                res[0].push_back(es[i][3]);
+                continue;
+            }
+            DSU d2(n);
+            d2.merge(es[i][0],es[i][1]);
+            wt1=es[i][2];
+            cnt=0;
+            for(int j=0;j<es.size();j++){
+                if(i==j)
+                continue;
+                vector<int>&e=es[j];
+                int u=e[0],v=e[1],wt=e[2];
+                if(d2.find(u)!=d2.find(v)){
+                    d2.merge(u,v);
+                    wt1+=wt;
+                    cnt++;
+                }
+                if(cnt==n-1)
+                break;
+            }
+            if(mstwt==wt1)
+            res[1].push_back(es[i][3]);
+        }
+        return res;
+    }
+};
+```
