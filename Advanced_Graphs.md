@@ -518,3 +518,77 @@ public:
     }
 };
 ```
+
+## 10 Greatest Common Divisor Traversal
+
+You are given a 0-indexed integer array nums, and you are allowed to traverse between its indices. You can traverse between index i and index j, i != j, if and only if gcd(nums[i], nums[j]) > 1, where gcd is the greatest common divisor.
+
+Your task is to determine if for every pair of indices i and j in nums, where i < j, there exists a sequence of traversals that can take us from i to j.
+
+Return true if it is possible to traverse between all such pairs of indices, or false otherwise.
+
+```cpp
+class DSU{
+    vector<int>parent,rank;
+    public:
+    DSU(int n){
+        parent.resize(n);
+        rank.resize(n,-1);
+        iota(parent.begin(),parent.end(),0);
+    }
+    int find(int u){
+        if(parent[u]==u)
+        return u;
+        else
+        return parent[u]=find(parent[u]);
+    }
+    void merge(int u,int v){
+        u=find(u);
+        v=find(v);
+        if(rank[u]>rank[v])
+            parent[v]=u;
+        else if(rank[v]>rank[u])
+            parent[u]=v;
+        else
+        {
+            parent[v]=u;
+            rank[u]++;
+        }
+    }
+};
+class Solution {
+public:
+    bool canTraverseAllPairs(vector<int>& nums) {
+        int maxo=*max_element(nums.begin(),nums.end());
+        vector<int>sieve(maxo+1,0);
+        sieve[1]=1;
+        for(int i=2;i<=maxo;i++){
+            if(sieve[i]!=0)
+            continue;
+            for(long long num=1LL*i*i;num<=maxo;num+=i)
+            sieve[num]=i;
+        }
+        DSU d(nums.size()+maxo+1);
+        for(int i=0;i<nums.size();i++){
+            int num=nums[i];
+            if(!sieve[num])
+            {
+                d.merge(i,nums.size()+num);
+                continue;
+            }
+            while(num>1){
+                int p=(!sieve[num])?num:sieve[num];
+                d.merge(i,nums.size()+p);
+                while(num%p==0)
+                num/=p;
+            }
+        }
+        int par=d.find(0);
+        for(int i=1;i<nums.size();i++){
+            if(d.find(i)!=par)
+            return 0;
+        }
+        return 1;
+    }
+};
+```
