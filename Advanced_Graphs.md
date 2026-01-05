@@ -452,3 +452,69 @@ public:
     }
 };
 ```
+
+## 9 Build a Matrix With Conditions
+
+You are given a positive integer k. You are also given:
+
+a 2D integer array rowConditions of size n where rowConditions[i] = [abovei, belowi], and
+a 2D integer array colConditions of size m where colConditions[i] = [lefti, righti].
+The two arrays contain integers from 1 to k.
+
+You have to build a k x k matrix that contains each of the numbers from 1 to k exactly once. The remaining cells should have the value 0.
+
+The matrix should also satisfy the following conditions:
+
+The number abovei should appear in a row that is strictly above the row at which the number belowi appears for all i from 0 to n - 1.
+The number lefti should appear in a column that is strictly left of the column at which the number righti appears for all i from 0 to m - 1.
+Return any matrix that satisfies the conditions. If no answer exists, return an empty matrix.
+
+```cpp
+class Solution {
+public:
+    vector<int>topoSort(int n,vector<vector<int>>&edges){
+        vector<vector<int>>adj(n+1);
+        vector<int>indeg(n+1,0);
+        for(auto &e:edges)
+        {
+            adj[e[0]].push_back(e[1]);
+            indeg[e[1]]++;
+        }
+        queue<int>q;
+        for(int i=1;i<=n;i++){
+            if(indeg[i]==0)
+            q.push(i);
+        }
+        vector<int>res;
+        while(!q.empty()){
+            int u=q.front();
+            q.pop();
+            res.push_back(u);
+            for(auto &v:adj[u]){
+                indeg[v]--;
+                if(!indeg[v])
+                q.push(v);
+            }
+        }
+        return res;
+    }
+    vector<vector<int>> buildMatrix(int k, vector<vector<int>>& rowConditions, vector<vector<int>>& colConditions) {
+        vector<vector<int>>res;
+        vector<int>colOrder=topoSort(k,colConditions);
+        if(colOrder.size()!=k)
+        return res;
+        vector<int>rowOrder=topoSort(k,rowConditions);
+        if(rowOrder.size()!=k)
+        return res;
+        vector<int>colIndex(k+1);
+        for(int i=0;i<colOrder.size();i++)
+        colIndex[colOrder[i]]=i;
+        res.resize(k,vector<int>(k,0));
+        for(int i=0;i<k;i++){
+            int ele=rowOrder[i];
+            res[i][colIndex[ele]]=ele;
+        }
+        return res;
+    }
+};
+```
