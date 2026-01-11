@@ -665,20 +665,15 @@ public:
     int largestRectangleArea(vector<int>& heights) {
         stack<int>stk;
         int maxarea=0;
-        for(int i=0;i<heights.size();i++){
-            while(!stk.empty() && heights[stk.top()]>=heights[i]){
-                int top=stk.top();
+        for(int i=0;i<=heights.size();i++){
+            int h=(i==heights.size()?0:heights[i]);
+            while(!stk.empty() && h<heights[stk.top()]){
+                int height=heights[stk.top()];
                 stk.pop();
-                int width=stk.empty()?i:i-stk.top()-1;
-                maxarea=max(maxarea,heights[top]*width);
+                int width=(stk.empty()?i:i-stk.top()-1);
+                maxarea=max(maxarea,height*width);
             }
             stk.push(i);
-        }
-        while(!stk.empty()){
-            int top=stk.top();
-            stk.pop();
-            int width=stk.empty()?heights.size():heights.size()-stk.top()-1;
-            maxarea=max(maxarea,heights[top]*width);
         }
         return maxarea;
     }
