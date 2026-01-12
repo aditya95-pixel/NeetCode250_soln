@@ -230,16 +230,21 @@ Return the max sliding window.
 class Solution {
 public:
     vector<int> maxSlidingWindow(vector<int>& nums, int k) {
-        multiset<int,greater<int>>s;
-        for(int i=0;i<k;i++)
-        s.insert(nums[i]);
         vector<int>res;
-        res.push_back(*s.begin());
-        for(int i=k;i<nums.size();i++)
-        {
-            s.erase(s.lower_bound(nums[i-k]));
-            s.insert(nums[i]);
-            res.push_back(*s.begin());
+        deque<pair<int,int>>q;
+        for(int i=0;i<k;i++){
+            while(!q.empty() && q.back().first<=nums[i])
+                q.pop_back();
+            q.push_back({nums[i],i});
+        }
+        res.push_back(q.front().first);
+        for(int i=k;i<nums.size();i++){
+            while(!q.empty() && q.front().second<=i-k)
+                q.pop_front();
+            while(!q.empty() && q.back().first<=nums[i])
+                q.pop_back();
+            q.push_back({nums[i],i});
+            res.push_back(q.front().first);
         }
         return res;
     }
