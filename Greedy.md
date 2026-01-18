@@ -471,3 +471,48 @@ public:
     }
 };
 ```
+
+## 15 Lexicographically Smallest String After Deleting Duplicate Characters
+
+You are given a string s that consists of lowercase English letters.
+
+You can perform the following operation any number of times (possibly zero times):
+
+Choose any letter that appears at least twice in the current string s and delete any one occurrence.
+Return the lexicographically smallest resulting string that can be formed this way.
+
+```cpp
+class Solution {
+public:
+    string lexSmallestAfterDeletion(string s) {
+        string res;
+        unordered_map<char,int>mp;
+        for(auto &c:s)
+        mp[c]++;
+        deque<char>q;
+        for(int i=0;i<s.size();i++){
+            if(q.empty() || q.back()<=s[i])
+            q.push_back(s[i]);
+            else{
+                while(!q.empty() && mp[q.back()]>=2 && q.back()>s[i])
+                {
+                    mp[q.back()]--;
+                    q.pop_back();
+                }
+                q.push_back(s[i]);
+            }
+        }
+        while(!q.empty() && mp[q.back()]>=2)
+        {
+            mp[q.back()]--;
+            q.pop_back();
+        }
+        while(!q.empty())
+        {
+            res+=q.front();
+            q.pop_front();
+        }
+        return res;
+    }
+};
+```
