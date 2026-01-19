@@ -1137,3 +1137,36 @@ class Solution {
     }
 };
 ```
+
+## 23 Directed Graph Cycle
+
+Given a Directed Graph with V vertices (Numbered from 0 to V-1) and E edges, check whether it contains any cycle or not.
+The graph is represented as a 2D vector edges[][], where each entry edges[i] = [u, v] denotes an edge from vertex u to v.
+
+```cpp
+class Solution {
+  public:
+    bool dfs(int u,vector<vector<int>>&adj,set<int>&vis){
+        vis.insert(u);
+        for(auto &v:adj[u]){
+            if(vis.count(v))
+            return 1;
+            if(dfs(v,adj,vis))
+            return 1;
+        }
+        vis.erase(u);
+        return 0;
+    }
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+        vector<vector<int>>adj(V);
+        for(auto &edge:edges)
+        adj[edge[0]].push_back(edge[1]);
+        for(int i=0;i<V;i++){
+            set<int>vis;
+            if(dfs(i,adj,vis))
+            return 1;
+        }
+        return 0;
+    }
+};
+```
