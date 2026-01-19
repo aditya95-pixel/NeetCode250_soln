@@ -1099,3 +1099,41 @@ public:
     }
 };
 ```
+
+## 22 Undirected Graph Cycle
+
+Given an undirected graph with V vertices and E edges, represented as a 2D vector edges[][], where each entry edges[i] = [u, v] denotes an edge between vertices u and v, determine whether the graph contains a cycle or not.
+
+Note: The graph can have multiple component.
+
+```cpp
+class Solution {
+  public:
+    bool dfs(int u,int p,vector<vector<int>>&adj,set<int>&vis){
+        vis.insert(u);
+        for(auto &v:adj[u]){
+            if(v==p)
+            continue;
+            if(vis.count(v))
+            return 1;
+            if(dfs(v,u,adj,vis))
+            return 1;
+        }
+        vis.erase(u);
+        return 0;
+    }
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        vector<vector<int>>adj(V);
+        for(auto &edge:edges){
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        for(int i=0;i<V;i++){
+            set<int>vis;
+            if(dfs(i,-1,adj,vis))
+            return 1;
+        }
+        return 0;
+    }
+};
+```
