@@ -516,3 +516,38 @@ public:
     }
 };
 ```
+
+## 16 Find Maximum Value in a Constrained Sequence
+
+You are given an integer n, a 2D integer array restrictions, and an integer array diff of length n - 1. Your task is to construct a sequence of length n, denoted by a[0], a[1], ..., a[n - 1], such that it satisfies the following conditions:
+
+a[0] is 0.
+All elements in the sequence are non-negative.
+For every index i (0 <= i <= n - 2), abs(a[i] - a[i + 1]) <= diff[i].
+For each restrictions[i] = [idx, maxVal], the value at position idx in the sequence must not exceed maxVal (i.e., a[idx] <= maxVal).
+Your goal is to construct a valid sequence that maximizes the largest value within the sequence while satisfying all the above conditions.
+
+Return an integer denoting the largest value present in such an optimal sequence.
+
+```cpp
+class Solution {
+public:
+    int findMaxVal(int n, vector<vector<int>>& restrictions, vector<int>& diff) {
+        vector<int>ideal(n,INT_MAX);
+        for(auto &item:restrictions){
+            int idx=item[0],maxVal=item[1];
+            ideal[idx]=min(ideal[idx],maxVal);
+        }
+        ideal[0]=0;
+        for(int i=1;i<n;i++){
+            int maxposleft=ideal[i-1]+diff[i-1];
+            ideal[i]=min(ideal[i],maxposleft);
+        }
+        for(int i=n-2;i>=0;i--){
+            int maxposright=ideal[i+1]+diff[i];
+            ideal[i]=min(ideal[i],maxposright);
+        }
+        return *max_element(ideal.begin(),ideal.end());
+    }
+};
+```
