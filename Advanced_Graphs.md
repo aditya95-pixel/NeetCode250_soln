@@ -212,30 +212,30 @@ public:
     int swimInWater(vector<vector<int>>& grid) {
         vector<vector<int>>dist(grid.size(),vector<int>(grid[0].size(),INT_MAX));
         priority_queue<vector<int>,vector<vector<int>>,greater<>>pq;
-        pq.push({0,0,grid[0][0]});
+        pq.push({grid[0][0],0,0});
         dist[0][0]=grid[0][0];
         while(!pq.empty()){
-            int i=pq.top()[0],j=pq.top()[1],d=pq.top()[2];
+            int i=pq.top()[1],j=pq.top()[2],d=pq.top()[0];
             pq.pop();
             if(i-1>=0 && dist[i-1][j]>max(d,grid[i-1][j]))
             {
                 dist[i-1][j]=max(d,grid[i-1][j]);
-                pq.push({i-1,j,dist[i-1][j]});
+                pq.push({dist[i-1][j],i-1,j});
             }
             if(j-1>=0 && dist[i][j-1]>max(d,grid[i][j-1]))
             {
                 dist[i][j-1]=max(d,grid[i][j-1]);
-                pq.push({i,j-1,dist[i][j-1]});
+                pq.push({dist[i][j-1],i,j-1});
             }
             if(i+1<grid.size() && dist[i+1][j]>max(d,grid[i+1][j]))
             {
                 dist[i+1][j]=max(d,grid[i+1][j]);
-                pq.push({i+1,j,dist[i+1][j]});
+                pq.push({dist[i+1][j],i+1,j});
             }
             if(j+1<grid[0].size() && dist[i][j+1]>max(d,grid[i][j+1]))
             {
                 dist[i][j+1]=max(d,grid[i][j+1]);
-                pq.push({i,j+1,dist[i][j+1]});
+                pq.push({dist[i][j+1],i,j+1});
             }
         }
         return dist[grid.size()-1][grid[0].size()-1];
