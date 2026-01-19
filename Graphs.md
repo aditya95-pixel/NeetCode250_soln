@@ -705,35 +705,49 @@ public:
 Given n nodes labeled from 0 to n - 1 and a list of undirected edges (each edge is a pair of nodes), write a function to check whether these edges make up a valid tree.
 
 ```cpp
+class DSU{
+    vector<int>parent,rank;
+    public:
+    DSU(int n){
+        parent.resize(n);
+        rank.resize(n,0);
+        for(int i=0;i<n;i++)
+        parent[i]=i;
+    }
+    int find(int u){
+        if(parent[u]==u)
+        return u;
+        else
+        return parent[u]=find(parent[u]);
+    }
+    void merge(int u,int v){
+        u=find(u);
+        v=find(v);
+        if(rank[u]>rank[v])
+            parent[v]=u;
+        else if(rank[v]>rank[u])
+            parent[u]=v;
+        else
+        {
+            parent[v]=u;
+            rank[u]++;
+        }
+    }
+};
 class Solution {
 public:
-    
     bool validTree(int n, vector<vector<int>>& edges) {
-        vector<vector<int>>adj(n);
+        if(edges.size()!=n-1)
+        return 0;
+        DSU d(n);
         for(auto &edge:edges){
-            adj[edge[0]].push_back(edge[1]);
-            adj[edge[1]].push_back(edge[0]);
+            int u=edge[0],v=edge[1];
+            if(d.find(u)!=d.find(v)){
+                d.merge(u,v);
+            }else
+            return 0;
         }
-        vector<int>res;
-        queue<pair<int,int>>q;
-        vector<bool>vis(n,0);
-        q.push({0,-1});
-        vis[0]=1;
-        while(!q.empty()){
-            int u=q.front().first,p=q.front().second;
-            q.pop();
-            res.push_back(u);
-            for(auto &v:adj[u]){
-                if(v==p)
-                continue;
-                else if(!vis[v]){
-                    vis[v]=1;
-                    q.push({v,u});
-                }else
-                return 0;
-            }
-        }
-        return res.size()==n?1:0;
+        return 1;
     }
 };
 ```
