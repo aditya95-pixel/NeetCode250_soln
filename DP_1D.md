@@ -504,3 +504,52 @@ public:
     }
 };
 ```
+
+## 18 Palindrome Partitioning II
+
+Given a string s, partition s such that every substring of the partition is a palindrome.
+
+Return the minimum cuts needed for a palindrome partitioning of s.
+
+```cpp
+class Solution {
+public:
+    int minCut(string s) {
+        if(s.size()==1)
+        return 0;
+        vector<int>dp(s.size(),INT_MAX);
+        dp[0]=0;
+        for(int i=0;i<s.size();i++){
+            if(i+1<s.size() && s[i]==s[i+1]){
+                int i1=i,j1=i+1;
+                while(i1>=0 && j1<s.size()){
+                    if(s[i1]==s[j1])
+                    {
+                        i1--;
+                        j1++;
+                        dp[j1-1]=min(dp[j1-1],(i1>=0)?dp[i1]+1:0);
+                    }
+                    else
+                    break;
+                }
+            }
+            if(i-1>=0 && i+1<s.size() && s[i-1]==s[i+1]){
+                int i1=i-1,j1=i+1;
+                while(i1>=0 && j1<s.size()){
+                    if(s[i1]==s[j1])
+                    {
+                        i1--;
+                        j1++;
+                        dp[j1-1]=min(dp[j1-1],(i1>=0)?dp[i1]+1:0);
+                    }
+                    else
+                    break;
+                }
+            }
+            if(i-1>=0)
+            dp[i]=min(dp[i],dp[i-1]+1);
+        }
+        return dp.back();
+    }
+};
+```
