@@ -377,3 +377,54 @@ public:
     }
 };
 ```
+
+## 13 Maximum Length of a Concatenated String with Unique Characters
+
+You are given an array of strings arr. A string s is formed by the concatenation of a subsequence of arr that has unique characters.
+
+Return the maximum possible length of s.
+
+A subsequence is an array that can be derived from another array by deleting some or no elements without changing the order of the remaining elements.
+
+```cpp
+class Solution {
+public:
+    int maxLength(vector<string>& arr) {
+        int n=arr.size(),maxlen=0;
+        vector<int>dp(1<<n,0);
+        for(int i=0;i<arr.size();i++){
+            set<char>seto(arr[i].begin(),arr[i].end());
+            if(seto.size()<arr[i].size())
+            continue;
+            for(auto &c:arr[i])
+            dp[1<<i]|=(1<<(c-'a'));
+            maxlen=max(maxlen,(int)arr[i].size());
+        }
+        for(int mask=1;mask<1<<n;mask++){
+            if(mask&(mask-1)==0)
+            continue;
+            int curr=0;
+            bool chk=1;
+            for(int i=0;i<n;i++){
+                if((mask>>i)&1)
+                {
+                    if(curr&dp[1<<i]){
+                        chk=0;
+                        break;
+                    }
+                    curr|=dp[1<<i];
+                }
+            }
+            if(!chk)
+            continue;
+            int len=0;
+            for(int i=0;i<26;i++){
+                if((curr>>i)&1)
+                len++;
+            }
+            maxlen=max(maxlen,len);
+        }
+        return maxlen;
+    }
+};
+```
