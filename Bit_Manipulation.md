@@ -281,7 +281,7 @@ public:
 };
 ```
 
-## 11 1986. Minimum Number of Work Sessions to Finish the Tasks
+## 11 Minimum Number of Work Sessions to Finish the Tasks
 
 There are n tasks assigned to you. The task times are represented as an integer array tasks of length n, where the ith task takes tasks[i] hours to finish. A work session is when you work for at most sessionTime consecutive hours and then take a break.
 
@@ -333,6 +333,47 @@ public:
             }
         }
         return (dp.back().second==0)?dp.back().first:dp.back().first+1;
+    }
+};
+```
+
+## 12 Smallest Sufficient Team
+
+In a project, you have a list of required skills req_skills, and a list of people. The ith person people[i] contains a list of skills that the person has.
+
+Consider a sufficient team: a set of people such that for every required skill in req_skills, there is at least one person in the team who has that skill. We can represent these teams by the index of each person.
+
+For example, team = [0, 1, 3] represents the people with skills people[0], people[1], and people[3].
+Return any sufficient team of the smallest possible size, represented by the index of each person. You may return the answer in any order.
+
+It is guaranteed an answer exists.
+
+```cpp
+class Solution {
+public:
+    vector<int> smallestSufficientTeam(vector<string>& req_skills, vector<vector<string>>& people) {
+        int n=req_skills.size();
+        unordered_map<string,int>skill_index;
+        for(int i=0;i<n;i++)
+        skill_index[req_skills[i]]=i;
+        unordered_map<int,vector<int>>dp;
+        for(int i=0;i<people.size();i++){
+            int pplskillmask=0;
+            for(auto &skill:people[i])
+            pplskillmask|=(1<<(skill_index[skill]));
+            unordered_map<int,vector<int>>old_dp=dp;
+            for(auto &item:old_dp){
+                int prev_mask=item.first;
+                int combined_mask=(prev_mask|pplskillmask);
+                if(!dp.count(combined_mask) || dp[combined_mask].size()>dp[prev_mask].size()+1){
+                    vector<int>team=item.second;
+                    team.push_back(i);
+                    dp[combined_mask]=team;
+                }
+            }
+            dp[pplskillmask]={i};
+        }
+        return dp[(1<<n)-1];
     }
 };
 ```
