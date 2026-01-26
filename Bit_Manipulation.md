@@ -465,9 +465,6 @@ public:
                     if(((mask>>i)&1) && ((mask>>j)&1)){
                         num=(1<<i)|(1<<j);
                         int other=mask^num;
-                        if(cnt==2)
-                        dp[mask]=max(dp[mask],dp[other]+gcd(nums[i],nums[j]));
-                        else
                         dp[mask]=max(dp[mask],dp[other]+cnt/2*gcd(nums[i],nums[j]));            
                     }
                 }
