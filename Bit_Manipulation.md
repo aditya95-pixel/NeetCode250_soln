@@ -280,3 +280,59 @@ public:
     }
 };
 ```
+
+## 11 1986. Minimum Number of Work Sessions to Finish the Tasks
+
+There are n tasks assigned to you. The task times are represented as an integer array tasks of length n, where the ith task takes tasks[i] hours to finish. A work session is when you work for at most sessionTime consecutive hours and then take a break.
+
+You should finish the given tasks in a way that satisfies the following conditions:
+
+If you start a task in a work session, you must complete it in the same work session.
+You can start a new task immediately after finishing the previous one.
+You may complete the tasks in any order.
+Given tasks and sessionTime, return the minimum number of work sessions needed to finish all the tasks following the conditions above.
+
+The tests are generated such that sessionTime is greater than or equal to the maximum element in tasks[i].
+
+ ```cpp
+class Solution {
+public:
+    int minSessions(vector<int>& tasks, int sessionTime) {
+        int n=tasks.size();
+        vector<pair<int,int>>dp(1<<n,{INT_MAX,0});
+        for(int i=0;i<n;i++){
+            if(tasks[i]==sessionTime){
+                dp[1<<i].first=1;
+                dp[1<<i].second=0;
+            }else{
+                dp[1<<i].first=0;
+                dp[1<<i].second=tasks[i];
+            }
+        }
+        for(int mask=1;mask<1<<n;mask++){
+            if(((mask-1)&mask)==0)
+            continue;
+            for(int i=0;i<n;i++){
+                if((mask>>i)&1){
+                    int other=mask^(1<<i);
+                    pair<int,int>cand;
+                    if(dp[other].second+tasks[i]<sessionTime){
+                        cand.first=dp[other].first;
+                        cand.second=dp[other].second+tasks[i];
+                    }
+                    else if(dp[other].second+tasks[i]==sessionTime){
+                        cand.first=dp[other].first+1;
+                        cand.second=0;
+                    }else{
+                        cand.first=dp[other].first+1;
+                        cand.second=tasks[i];
+                    }
+                    if(cand.first<dp[mask].first || (cand.first==dp[mask].first && cand.second<dp[mask].second))
+                        dp[mask]=cand;
+                }
+            }
+        }
+        return (dp.back().second==0)?dp.back().first:dp.back().first+1;
+    }
+};
+```
