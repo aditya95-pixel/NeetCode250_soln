@@ -361,6 +361,7 @@ public:
 ```
 
 ```cpp
+// O(nlogn) soln
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {
