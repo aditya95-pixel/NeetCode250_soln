@@ -423,3 +423,96 @@ public:
     }
 };
 ```
+
+## 7 Maximum Subarray XOR with Bounded Range
+
+You are given a non-negative integer array nums and an integer k.
+
+You must select a subarray of nums such that the difference between its maximum and minimum elements is at most k. The value of this subarray is the bitwise XOR of all elements in the subarray.
+
+Return an integer denoting the maximum possible value of the selected subarray.
+
+```cpp
+class TrieNode{
+    public:
+    TrieNode*children[2];
+    int cnt;
+    TrieNode(){
+        children[0]=children[1]=NULL;
+        cnt=0;
+    }
+};
+class Trie{
+    public:
+    TrieNode*t;
+    Trie(){
+        t=new TrieNode();
+    }
+    void insert(int val){
+        TrieNode*curr=t;
+        for(int i=30;i>=0;i--){
+            bool b=(val>>i)&1;
+            if(!curr->children[b])
+                curr->children[b]=new TrieNode();
+            curr=curr->children[b];
+            curr->cnt++;
+        }
+    }
+    void remove(int val){
+        TrieNode*curr=t;
+        for(int i=30;i>=0;i--){
+            bool b=(val>>i)&1;
+            curr=curr->children[b];
+            curr->cnt--;
+        }
+    }
+    int solve(int val){
+        TrieNode*curr=t;
+        int res=0;
+        for(int i=30;i>=0;i--){
+            bool b=(val>>i)&1;
+            bool req=b^1;
+            if(curr->children[req] && curr->children[req]->cnt>0){
+                if(req)
+                res|=(1<<i);
+                curr=curr->children[req];
+            }else if(curr->children[b] && curr->children[b]->cnt>0){
+                if(b)
+                res|=(1<<i);
+                curr=curr->children[b];
+            }
+        }
+        return (val^res);
+    }
+};
+class Solution {
+public:
+    int maxXor(vector<int>& nums, int k) {
+        int res=0,curr=0;
+        vector<int>pref(nums.size()+1,0);
+        for(int i=0;i<nums.size();i++)
+            pref[i+1]=pref[i]^nums[i];
+        deque<int>maxq,minq;
+        Trie *t=new Trie();
+        t->insert(pref[0]);
+        int l=0;
+        for(int r=0;r<nums.size();r++){
+            while(!maxq.empty() && nums[maxq.back()]<=nums[r])
+                maxq.pop_back();
+            while(!minq.empty() && nums[minq.back()]>=nums[r])
+                minq.pop_back();
+            maxq.push_back(r);
+            minq.push_back(r);
+            while(nums[maxq.front()]-nums[minq.front()]>k){
+                t->remove(pref[l]);
+                if(maxq.front()==l) maxq.pop_front();
+                if(minq.front()==l) minq.pop_front();
+                l++;
+            }
+            res=max(res,t->solve(pref[r+1]));
+            t->insert(pref[r+1]);
+        }
+        return res;
+    }
+};
+```
