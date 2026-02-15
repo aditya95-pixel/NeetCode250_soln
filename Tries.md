@@ -361,8 +361,10 @@ Given an integer array nums, return the maximum result of nums[i] XOR nums[j], w
 class TrieNode{
     public:
     TrieNode*children[2];
+    int cnt;
     TrieNode(){
         children[0]=children[1]=NULL;
+        cnt=0;
     }
 };
 class Trie{
@@ -378,6 +380,15 @@ class Trie{
             if(!curr->children[b])
                 curr->children[b]=new TrieNode();
             curr=curr->children[b];
+            curr->cnt++;
+        }
+    }
+    void remove(int val){
+        TrieNode*curr=t;
+        for(int i=30;i>=0;i--){
+            bool b=(val>>i)&1;
+            curr=curr->children[b];
+            curr->cnt--;
         }
     }
     int solve(int val){
@@ -386,11 +397,11 @@ class Trie{
         for(int i=30;i>=0;i--){
             bool b=(val>>i)&1;
             bool req=b^1;
-            if(curr->children[req]){
+            if(curr->children[req] && curr->children[req]->cnt>0){
                 if(req)
                 res|=(1<<i);
                 curr=curr->children[req];
-            }else{
+            }else if(curr->children[b] && curr->children[b]->cnt>0){
                 if(b)
                 res|=(1<<i);
                 curr=curr->children[b];
