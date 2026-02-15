@@ -277,3 +277,138 @@ public:
     }
 };
 ```
+
+## 5 Maximum XOR subarray
+
+Given an array arr[] of size, N. Find the subarray with maximum XOR. A subarray is a contiguous part of the array.
+
+```cpp
+class TrieNode{
+    public:
+    TrieNode*children[2];
+    int cnt;
+    TrieNode(){
+        children[0]=children[1]=NULL;
+        cnt=0;
+    }
+};
+class Trie{
+    public:
+    TrieNode*t;
+    Trie(){
+        t=new TrieNode();
+    }
+    void insert(int val){
+        TrieNode*curr=t;
+        for(int i=30;i>=0;i--){
+            bool b=(val>>i)&1;
+            if(!curr->children[b])
+                curr->children[b]=new TrieNode();
+            curr=curr->children[b];
+            curr->cnt++;
+        }
+    }
+    void remove(int val){
+        TrieNode*curr=t;
+        for(int i=30;i>=0;i--){
+            bool b=(val>>i)&1;
+            curr=curr->children[b];
+            curr->cnt--;
+        }
+    }
+    int solve(int val){
+        TrieNode*curr=t;
+        int res=0;
+        for(int i=30;i>=0;i--){
+            bool b=(val>>i)&1;
+            bool req=b^1;
+            if(curr->children[req] && curr->children[req]->cnt>0){
+                if(req)
+                res|=(1<<i);
+                curr=curr->children[req];
+            }else if(curr->children[b] && curr->children[b]->cnt>0){
+                if(b)
+                res|=(1<<i);
+                curr=curr->children[b];
+            }
+        }
+        return (val^res);
+    }
+};
+class Solution {
+  public:
+    int maxSubarrayXOR(int N, int nums[]) {
+        vector<int>pref(N+1,0);
+        for(int i=0;i<N;i++)
+            pref[i+1]=pref[i]^nums[i];
+        int res=0;
+        Trie*t=new Trie();
+        t->insert(0);
+        for(int i=0;i<N;i++){
+            res=max(res,t->solve(pref[i+1]));
+            t->insert(pref[i+1]);
+        }
+        return res;
+    }
+};
+```
+
+## 6 Maximum XOR of Two Numbers in an Array
+
+Given an integer array nums, return the maximum result of nums[i] XOR nums[j], where 0 <= i <= j < n.
+
+ ```cpp
+class TrieNode{
+    public:
+    TrieNode*children[2];
+    TrieNode(){
+        children[0]=children[1]=NULL;
+    }
+};
+class Trie{
+    public:
+    TrieNode*t;
+    Trie(){
+        t=new TrieNode();
+    }
+    void insert(int val){
+        TrieNode*curr=t;
+        for(int i=30;i>=0;i--){
+            bool b=(val>>i)&1;
+            if(!curr->children[b])
+                curr->children[b]=new TrieNode();
+            curr=curr->children[b];
+        }
+    }
+    int solve(int val){
+        TrieNode*curr=t;
+        int res=0;
+        for(int i=30;i>=0;i--){
+            bool b=(val>>i)&1;
+            bool req=b^1;
+            if(curr->children[req]){
+                if(req)
+                res|=(1<<i);
+                curr=curr->children[req];
+            }else{
+                if(b)
+                res|=(1<<i);
+                curr=curr->children[b];
+            }
+        }
+        return (val^res);
+    }
+};
+class Solution {
+public:
+    int findMaximumXOR(vector<int>& nums) {
+        Trie*t=new Trie();
+        int res=0;
+        for(int i=0;i<nums.size();i++){
+            t->insert(nums[i]);
+            res=max(res,t->solve(nums[i]));
+        }
+        return res;
+    }
+};
+```
