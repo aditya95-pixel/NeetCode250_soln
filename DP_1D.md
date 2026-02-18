@@ -669,7 +669,10 @@ public:
         vector<int>dp;
         for(int i=0;i<envelopes.size();i++){
             if(dp.empty() || envelopes[i][1]>dp.back())
-            dp.push_back(envelopes[i][1]);
+            {
+                dp.push_back(envelopes[i][1]);
+                continue;
+            }
             int idx=lower_bound(dp.begin(),dp.end(),envelopes[i][1])-dp.begin();
             dp[idx]=envelopes[i][1];
         }
