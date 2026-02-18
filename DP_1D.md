@@ -594,3 +594,54 @@ public:
     }
 };
 ```
+
+## 20 Unique Binary Search Trees II
+
+Given an integer n, return all the structurally unique BST's (binary search trees), which has exactly n nodes of unique values from 1 to n. Return the answer in any order.
+
+```cpp
+class Solution {
+public:
+    vector<TreeNode*> solve(int l,int r){
+        vector<TreeNode*>res;
+        if(l>r)
+        return res;
+        if(l==r){
+            res.push_back(new TreeNode(l));
+            return res;
+        }
+        for(int mid=l;mid<=r;mid++){
+            vector<TreeNode*>left_subtrees=solve(l,mid-1);
+            vector<TreeNode*>right_subtrees=solve(mid+1,r);
+            if(mid==l){
+                for(int j=0;j<right_subtrees.size();j++){
+                    TreeNode*root=new TreeNode(mid);
+                    root->right=right_subtrees[j];
+                    res.push_back(root);
+                }
+                continue;
+            }
+            else if(mid==r){
+                for(int i=0;i<left_subtrees.size();i++){
+                    TreeNode*root=new TreeNode(mid);
+                    root->left=left_subtrees[i];
+                    res.push_back(root);
+                }
+                continue;
+            }
+            for(int i=0;i<left_subtrees.size();i++){
+                for(int j=0;j<right_subtrees.size();j++){
+                    TreeNode*root=new TreeNode(mid);
+                    root->left=left_subtrees[i];
+                    root->right=right_subtrees[j];
+                    res.push_back(root);
+                }
+            }
+        }
+        return res;
+    }
+    vector<TreeNode*> generateTrees(int n) {
+        return solve(1,n);
+    }
+};
+```
