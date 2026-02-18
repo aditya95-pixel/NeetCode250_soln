@@ -767,3 +767,87 @@ public:
     }
 };
 ```
+
+## 25 Count Inversions
+
+Given an array of integers arr[]. You have to find the Inversion Count of the array. 
+Note : Inversion count is the number of pairs of elements (i, j) such that i < j and arr[i] > arr[j].
+
+```cpp
+\\Mergesort method
+class Solution {
+    int cnt;
+  public:
+    void merge(vector<int>&arr,int l,int mid,int r){
+        int n1=mid-l+1,n2=r-mid;
+        vector<int>arr1(n1),arr2(n2);
+        for(int i=0;i<n1;i++)
+        arr1[i]=arr[i+l];
+        for(int i=0;i<n2;i++)
+        arr2[i]=arr[mid+i+1];
+        int i=0,j=0,k=l;
+        while(i<n1 && j<n2){
+            if(arr1[i]<=arr2[j])
+            {
+                arr[k++]=arr1[i];
+                i++;
+            }
+            else
+            {
+                arr[k++]=arr2[j];
+                cnt+=(n1-i);
+                j++;
+            }
+        }
+        while(i<n1)
+        {
+            arr[k++]=arr1[i];
+            i++;
+        }
+        while(j<n2)
+        {
+            arr[k++]=arr2[j];
+            j++;
+        }
+    }
+    void mergesort(vector<int>&arr,int l,int r){
+        if(l<r){
+            int mid=l+(r-l)/2;
+            mergesort(arr,l,mid);
+            mergesort(arr,mid+1,r);
+            merge(arr,l,mid,r);
+        }
+    }
+    int inversionCount(vector<int> &arr) {
+        cnt=0;
+        mergesort(arr,0,arr.size()-1);
+        return cnt;
+    }
+};
+```
+
+```cpp
+\\using ordered statistics
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template<class T>
+using oset=tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template<class T>
+using omultiset=tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template<class K, class V>
+using omap=tree<K,V,less<K>,rb_tree_tag,tree_order_statistics_node_update>;
+class Solution {
+  public:
+    int inversionCount(vector<int> &arr) {
+        omultiset<pair<int,int>>s;
+        int cnt=0;
+        for(int i=0;i<arr.size();i++){
+            s.insert({arr[i],i});
+            int rank=s.order_of_key({arr[i],i});
+            cnt+=i-rank;
+        }
+        return cnt;
+    }
+};
+```
