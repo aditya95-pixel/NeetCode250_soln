@@ -596,3 +596,47 @@ public:
     }
 };
 ```
+
+## 20 Count of Integers
+
+You are given two numeric strings num1 and num2 and two integers max_sum and min_sum. We denote an integer x to be good if:
+
+num1 <= x <= num2
+min_sum <= digit_sum(x) <= max_sum.
+Return the number of good integers. Since the answer may be large, return it modulo 109 + 7.
+
+Note that digit_sum(x) denotes the sum of the digits of x.
+
+```cpp
+#define ll long long
+const int mod=1e9+7;
+class Solution {
+public:
+    ll solve(string &s,int min_sum,int max_sum,int pos,int tight,int sum,vector<vector<vector<ll>>>&dp){
+        if(sum>max_sum)
+        return 0;
+        if(pos==s.size())
+            return ((sum>=min_sum) && (sum<=max_sum));
+        if(dp[pos][tight][sum]!=-1)
+        return dp[pos][tight][sum];
+        int limit=(tight==1)?s[pos]-'0':9;
+        ll res=0;
+        for(int d=0;d<=limit;d++){
+            res=(res+solve(s,min_sum,max_sum,pos+1,(tight && (d==limit)),sum+d,dp))%mod;
+        }
+        return dp[pos][tight][sum]=res;
+    }
+    int count(string num1, string num2, int min_sum, int max_sum) {
+        vector<vector<vector<ll>>>dp1(23,vector<vector<ll>>(2,vector<ll>(401,-1)));
+        vector<vector<vector<ll>>>dp2(23,vector<vector<ll>>(2,vector<ll>(401,-1)));
+        ll r=solve(num2,min_sum,max_sum,0,1,0,dp2),l=solve(num1,min_sum,max_sum,0,1,0,dp1);
+        int sum=0;
+        for(int i=0;i<num1.size();i++)
+        sum+=num1[i]-'0';
+        if(sum>=min_sum && sum<=max_sum)
+        return (r-l+1+mod)%mod;
+        else
+        return (r-l+mod)%mod;
+    }
+};
+```
